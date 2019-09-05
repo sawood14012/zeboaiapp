@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "361467019573",
+    "firebase_url": "https://zeboai-e3954.firebaseio.com",
+    "project_id": "zeboai-e3954",
+    "storage_bucket": "zeboai-e3954.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:361467019573:android:ceafe243ee875ee5880c7c",
+        "android_client_info": {
+          "package_name": "ai.zebo.zebo"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "361467019573-6eghd333uqdk473neu7qhffqn8sh26tb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDfs--c2Ues5okrfqgHeukGXA9X7f--F2M"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "361467019573-6eghd333uqdk473neu7qhffqn8sh26tb.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
