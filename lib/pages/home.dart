@@ -4,6 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:zebo/services/authentication.dart';
 import 'package:zebo/pages/root_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:zebo/pages/CardItemModel.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:zebo/pages/form_page.dart';
 
 
 class MyHomePage extends StatefulWidget {
@@ -29,9 +32,20 @@ class MyHomePage extends StatefulWidget {
   _MyHomePageState createState() => _MyHomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class _MyHomePageState extends State<MyHomePage>  with TickerProviderStateMixin{
   bool _anchorToBottom = false;
 
+
+  var appColors = [Color.fromRGBO(231, 129, 109, 1.0),Color.fromRGBO(99, 138, 223, 1.0),Color.fromRGBO(111, 194, 173, 1.0)];
+  var cardIndex = 0;
+  ScrollController scrollController;
+  var currentColor = Color.fromRGBO(231, 129, 109, 1.0);
+  String name="";
+  var cardsList = [CardItemModel("Eat Healthy always", Icons.account_circle, 9, 0.83),CardItemModel("Try to workout everyday", Icons.work, 12, 0.24),CardItemModel("Sleep Well", Icons.home, 7, 0.32)];
+
+  AnimationController animationController;
+  ColorTween colorTween;
+  CurvedAnimation curvedAnimation;
 
   // ignore: non_constant_identifier_names
 
@@ -44,6 +58,15 @@ class _MyHomePageState extends State<MyHomePage> {
       print(firebaseUser.uid);
     });
     super.initState();
+    scrollController = new ScrollController();
+    DocumentReference myref = Firestore.instance.collection("users").document(widget.userId);
+    myref.get().then((Doc) {
+      setState(() {
+        name = Doc.data['Name'];
+      });
+
+
+    });
   }
 
   @override
@@ -64,20 +87,6 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget _appbody;
 
 
-  _MyHomePageState() {
-    _filter.addListener(() {
-      if (_filter.text.isEmpty) {
-        setState(() {
-          _searchText = "";
-          //filteredNames = names;
-        });
-      } else {
-        setState(() {
-          _searchText = _filter.text;
-        });
-      }
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -90,10 +99,12 @@ class _MyHomePageState extends State<MyHomePage> {
     // fast, so that you can just rebuild anything that needs updating rather
     // than having to individually change instances of widgets.
     return Scaffold(
+      backgroundColor: currentColor,
       appBar: AppBar(
+        centerTitle: true,
         title: this._appBarTitle,
-        bottom: PreferredSize(
-            child: new Text("hello"), preferredSize: Size(25.0, 25.0)),
+        backgroundColor: currentColor,
+        elevation: 0.0,
         actions: <Widget>[
          /*
           IconButton(
@@ -130,14 +141,14 @@ class _MyHomePageState extends State<MyHomePage> {
           DrawerHeader(
             child: Text('Zebo.ai'),
             decoration: BoxDecoration(
-              color: Colors.cyanAccent,
+              color: currentColor,
             ),
           ),
           ListTile(
-            title: Text('Model1'),
+            title: Text('Acne analysis'),
             onTap: () {
-              // Update the state of the app.
-              // ...
+              Navigator.pop(context);
+              Navigator.push(context,MaterialPageRoute(builder: (context)=> FormPage(id:widget.userId)));
             },
           ),
           ListTile(
@@ -160,86 +171,135 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
 
 
-      body: new Container(
+      body: new Center(
+  child: Column(
+  crossAxisAlignment: CrossAxisAlignment.start,
+  children: <Widget>[
+  Row(),
+  Padding(
+  padding: const EdgeInsets.symmetric(horizontal: 64.0, vertical: 32.0),
+  child: Container(
+  child: Column(
+  crossAxisAlignment: CrossAxisAlignment.start,
+  children: <Widget>[
+  Padding(
+  padding: const EdgeInsets.symmetric(vertical: 16.0),
+  child: Icon(Icons.local_hospital, size: 45.0, color: Colors.white,),
+  ),
+  Padding(
+  padding: const EdgeInsets.fromLTRB(0.0,16.0,0.0,12.0),
+  child: Text("Hi," + name + " !", style: TextStyle(fontSize: 30.0, color: Colors.white, fontWeight: FontWeight.w400),),
+  ),
+  Text("Hope you\'r feeling good", style: TextStyle(color: Colors.white),),
+  ],
+  ),
+  ),
+  ),
+  Column(
+  crossAxisAlignment: CrossAxisAlignment.start,
+  children: <Widget>[
 
-      ),
+  Container(
+  height: 350.0,
+  child: ListView.builder(
+  physics: NeverScrollableScrollPhysics(),
+  itemCount: 3,
+  controller: scrollController,
+  scrollDirection: Axis.horizontal,
+  itemBuilder: (context, position) {
+  return GestureDetector(
+  child: Padding(
+  padding: const EdgeInsets.all(8.0),
+  child: Card(
+  child: Container(
+  width: 250.0,
+  child: Column(
+  crossAxisAlignment: CrossAxisAlignment.start,
+  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  children: <Widget>[
+  Padding(
+  padding: const EdgeInsets.all(8.0),
+  child: Row(
+  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  children: <Widget>[
+  Icon(cardsList[position].icon, color: appColors[position],),
+  Icon(Icons.more_vert, color: Colors.grey,),
+  ],
+  ),
+  ),
+  Padding(
+  padding: const EdgeInsets.all(8.0),
+  child: Column(
+  crossAxisAlignment: CrossAxisAlignment.start,
+  children: <Widget>[
+
+  Padding(
+  padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+  child: Text("${cardsList[position].cardTitle}", style: TextStyle(fontSize: 28.0),),
+  ),
+  Padding(
+  padding: const EdgeInsets.all(8.0),
+  child: LinearProgressIndicator(value: cardsList[position].taskCompletion,),
+  ),
+  ],
+  ),
+  ),
+  ],
+  ),
+  ),
+  shape: RoundedRectangleBorder(
+  borderRadius: BorderRadius.circular(10.0)
+  ),
+  ),
+  ),
+  onHorizontalDragEnd: (details) {
+
+  animationController = AnimationController(vsync: this, duration: Duration(milliseconds: 500));
+  curvedAnimation = CurvedAnimation(parent: animationController, curve: Curves.fastOutSlowIn);
+  animationController.addListener(() {
+  setState(() {
+  currentColor = colorTween.evaluate(curvedAnimation);
+  });
+  });
+
+  if(details.velocity.pixelsPerSecond.dx > 0) {
+  if(cardIndex>0) {
+  cardIndex--;
+  colorTween = ColorTween(begin:currentColor,end:appColors[cardIndex]);
+  }
+  }else {
+  if(cardIndex<2) {
+  cardIndex++;
+  colorTween = ColorTween(begin: currentColor,
+  end: appColors[cardIndex]);
+  }
+  }
+  setState(() {
+  scrollController.animateTo((cardIndex)*256.0, duration: Duration(milliseconds: 500), curve: Curves.fastOutSlowIn);
+  });
+
+  colorTween.animate(curvedAnimation);
+
+  animationController.forward( );
+
+  },
+  );
+  },
+  ),
+  ),
+  ],
+  )
+  ],
+  ),
+  ),
 
 
     );
   }
 
 
-  void _searchPressed() {
-    setState(() {
-      if (this._carticon.icon == Icons.close) {
-        this._carticon = new Icon(Icons.shopping_cart);
-        this._appBarTitle = new Text('Habibi Mart');
-        _cartopen = false;
-        _cartswitch = false;
-      }
-      if (this._searchIcon.icon == Icons.search) {
-        this._searchIcon = new Icon(Icons.close);
-
-        this._appBarTitle = new TextField(
-
-          onChanged: (text) {
-            _loading = false;
-          },
-          controller: _filter,
-          onSubmitted: (text) {
-            _loading = true;
-          },
-          cursorColor: Colors.white,
 
 
-          style: new TextStyle(
-            color: Colors.white, decorationColor: Colors.white,
-            decorationStyle: TextDecorationStyle.wavy,),
-          decoration: new InputDecoration(
-              prefixIcon: new Icon(Icons.search, color: Colors.white,),
-              hintText: 'Search...',
-              hintStyle: new TextStyle(color: Colors.white),
-              suffixStyle: new TextStyle(color: Colors.white),
-              enabledBorder: new UnderlineInputBorder(
-                  borderSide: new BorderSide(color: Colors.white))
-
-
-          ),
-        );
-      } else {
-        this._searchIcon = new Icon(Icons.search);
-        this._appBarTitle = new Text('Habibi Mart');
-        //filteredNames = names;
-        _filter.clear();
-        _loading = false;
-      }
-    });
-  }
-
-  void _cartPressed() {
-    setState(() {
-      if (this._searchIcon.icon == Icons.close) {
-        this._searchIcon = new Icon(Icons.search);
-        this._appBarTitle = new Text('Habibi Mart');
-        //filteredNames = names;
-        _filter.clear();
-        _loading = false;
-      }
-      if (this._carticon.icon == Icons.shopping_cart) {
-        this._carticon = new Icon(Icons.close);
-        this._appBarTitle = new Text('Cart');
-        _cartopen = true;
-        _cartswitch = true;
-        print(_cartopen);
-      }
-      else {
-        this._carticon = new Icon(Icons.shopping_cart);
-        this._appBarTitle = new Text('Habibi Mart');
-        _cartopen = false;
-        _cartswitch = false;
-      }
-    });
-  }
 
   Future<String> _refresh() async {
     await new Future.delayed(new Duration(seconds: 3), () {
