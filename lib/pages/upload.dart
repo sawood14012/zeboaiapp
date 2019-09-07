@@ -120,11 +120,20 @@ class UserOptionsState extends State<UserOptions> {
   sendtoapi() async{
     Response response;
     Dio dio = new Dio();
-    dio.options.baseUrl = "http://34.93.92.101:5000/jsonapp";
-    dio.options.connectTimeout = 120000;
+    dio.options.baseUrl = "http://34.83.55.26/jsonapp";
+    dio.options.connectTimeout = 100000;
     print(_uploadedfileurl);
     try{
-      response = await dio.post("http://34.93.92.101:5000/jsonapp", data: {"img":_uploadedfileurl});
+      response = await dio.post("https://jsonplaceholder.typicode.com/posts", data: {"body":_uploadedfileurl,"title": 'foo',
+
+        "userId": 1});
+      print("response");
+      setState(() {
+        galleryFile = null;
+        prog = false;
+        msg = "Done.!";
+      });
+
       print(response.data);
       galleryFile = null;
     }
