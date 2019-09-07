@@ -109,7 +109,7 @@ class _FormPageState extends State<FormPage> {
                       child: Padding(
                         padding: EdgeInsets.all(16),
                         child: Text(
-                          'SAVE',
+                          'Proceed to upload image',
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             color: Colors.white,
@@ -435,7 +435,7 @@ class _FormPageState extends State<FormPage> {
   }
 
   void adduserdata() async {
-    Firestore.instance.collection("acneanalysis").document()
+    await Firestore.instance.collection("acneanalysis").document()
         .setData({
       "uid":widget.id,
       "Name":name,
@@ -456,9 +456,9 @@ class _FormPageState extends State<FormPage> {
   void showInSnackBar(BuildContext context, String message) {
     _scaffoldKey.currentState.showSnackBar(
       SnackBar(
+        backgroundColor: Colors.redAccent,
         content:new Container(
-          height: 20.0,
-          color: Colors.redAccent,
+          height: 30.0,
           child: Text(message, style: TextStyle(fontSize: 20.0),),
         ),
       ),
