@@ -124,9 +124,7 @@ class UserOptionsState extends State<UserOptions> {
     dio.options.connectTimeout = 100000;
     print(_uploadedfileurl);
     try{
-      response = await dio.post("https://jsonplaceholder.typicode.com/posts", data: {"body":_uploadedfileurl,"title": 'foo',
-
-        "userId": 1});
+      response = await dio.post("http://34.83.55.26/jsonapp", data: {"img":_uploadedfileurl});
       print("response");
       setState(() {
         galleryFile = null;
