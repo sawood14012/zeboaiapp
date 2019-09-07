@@ -20,8 +20,8 @@ class UserOptionsState extends State<UserOptions> {
 
 //save the result of camera file
   File cameraFile;
-  bool prog=false;
-  String msg="";
+  bool prog = false;
+  String msg = "";
 
   @override
   Widget build(BuildContext context) {
@@ -47,35 +47,96 @@ class UserOptionsState extends State<UserOptions> {
       setState(() {});
     }
 
-    return new Scaffold(
-      appBar: new AppBar(
-        title: new Text('Image Picker'),
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Image Picker'),
       ),
-      body: new Builder(
-        builder: (BuildContext context) {
-          return new Column(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: <Widget>[
-              new RaisedButton(
-                child: new Text('Select Image from Gallery'),
-                onPressed: imageSelectorGallery,
+      body: Column(
+        children: <Widget>[
+          Expanded(
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: <Widget>[
+                  displaySelectedFile(galleryFile),
+                  progressof(),
+                  Row(
+                    children: <Widget>[
+                      Expanded(
+                        child: Container(
+                          padding: EdgeInsets.all(16),
+                          child: ButtonTheme(
+                            child: RaisedButton(
+                              child: Container(
+                                padding: EdgeInsets.all(8),
+                                child: Text(
+                                  'Select Image from Gallery',
+                                  textAlign: TextAlign.center,
+                                ),
+                              ),
+                              onPressed: imageSelectorGallery,
+                            ),
+                          ),
+                        ),
+                      ),
+                      Expanded(
+                        child: Container(
+                          padding: EdgeInsets.all(16),
+                          child: ButtonTheme(
+                            child: RaisedButton(
+                              child: Container(
+                                padding: EdgeInsets.all(8),
+                                child: Text(
+                                  'Select Image from Camera',
+                                  textAlign: TextAlign.center,
+                                ),
+                              ),
+                              onPressed: imageSelectorCamera,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  )
+                ],
               ),
-              new RaisedButton(
-                child: new Text('Select Image from Camera'),
-                onPressed: imageSelectorCamera,
+            ),
+          ),
+          Material(
+            color: Theme.of(context).primaryColor,
+            child: InkWell(
+              onTap: () {},
+              child: SafeArea(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    Expanded(
+                      child: Padding(
+                        padding: EdgeInsets.all(16),
+                        child: Text(
+                          'Upload',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.w700,
+                            fontSize: 16,
+                          ),
+                        ),
+                      ),
+                    )
+                  ],
+                ),
               ),
-              displaySelectedFile(galleryFile),
-              progressof(),
-              new RaisedButton(onPressed: uploadFile,child: Text("UPLOAD"),)
-
-            ],
-          );
-        },
-      )
+            ),
+          )
+        ],
+      ),
     );
   }
 
-  void call(){
+  void call() {
     uploadFile();
   }
 
@@ -84,28 +145,33 @@ class UserOptionsState extends State<UserOptions> {
       uploadFile();
     });
   }
+
   Widget displaySelectedFile(File file) {
-    return new SizedBox(
-      height: 200.0,
-      width: 300.0,
+    return Center(
+      child: new SizedBox(
+        height: 200.0,
+        width: 300.0,
 //child: new Card(child: new Text(''+galleryFile.toString())),
 //child: new Image.file(galleryFile),
-      child: file == null
-          ? new Text('Sorry nothing selected!!')
-          : new Image.file(file),
+        child: Center(
+          child: file == null
+              ? new Text('Sorry nothing selected!!')
+              : new Image.file(file),
+        ),
+      ),
     );
   }
 
   Future uploadFile() async {
-    if(galleryFile==null){
+    if (galleryFile == null) {
       return;
     }
     setState(() {
-      prog =true;
+      prog = true;
     });
     StorageReference storageReference = FirebaseStorage.instance
         .ref()
-        .child('analysisimg/'+basename(galleryFile.path));
+        .child('analysisimg/' + basename(galleryFile.path));
     StorageUploadTask uploadTask = storageReference.putFile(galleryFile);
     await uploadTask.onComplete;
     print('File Uploaded');
@@ -117,30 +183,33 @@ class UserOptionsState extends State<UserOptions> {
     });
   }
 
-  sendtoapi() async{
-    Response response;
-    Dio dio = new Dio();
-    dio.options.baseUrl = "http://34.93.92.101:5000/jsonapp";
-    dio.options.connectTimeout = 120000;
+  sendtoapi() async {
     print(_uploadedfileurl);
-    try{
-      response = await dio.post("http://34.93.92.101:5000/jsonapp", data: {"img":_uploadedfileurl});
+    try {
+      Response response = await Dio().post(
+        "http://34.93.92.101:5000/jsonapp",
+        options: Options(
+          connectTimeout: 120000,
+        ),
+        data: {
+          "img": _uploadedfileurl,
+        },
+      );
       print(response.data);
+    } on HttpException catch (error) {
       galleryFile = null;
+      setState(
+        () {
+          prog = false;
+          msg = "error";
+        },
+      );
+      print(error);
     }
-    catch(HttpExecption) {
-      galleryFile = null;
-      setState(() {
-        prog =false;
-        msg = "error";
-      });
-      print(HttpExecption.toString());
-    }
-
   }
 
-  Widget progressof(){
-    if(prog){
+  Widget progressof() {
+    if (prog) {
       return new Container(
         height: 50.0,
         child: new Column(
@@ -150,9 +219,8 @@ class UserOptionsState extends State<UserOptions> {
           ],
         ),
       );
-    }
-    else{
-     return Container(
+    } else {
+      return Container(
         child: Text(msg),
       );
     }
