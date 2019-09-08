@@ -1,4 +1,3 @@
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:zebo/pages/login_signup_page.dart';
@@ -7,24 +6,19 @@ import 'package:zebo/services/authentication.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:zebo/pages/login_signup_page.dart';
 
-class Adddetails extends StatefulWidget{
-  Adddetails({this.auth, this.onSignedIn,this.first});
+class Adddetails extends StatefulWidget {
+  Adddetails({this.auth, this.onSignedIn, this.first});
   final BaseAuth auth;
   final VoidCallback onSignedIn;
   final bool first;
 
-
-
-
-
   @override
-  _adddetails createState() =>  _adddetails();
-
+  _adddetails createState() => _adddetails();
 }
-class _adddetails extends State<Adddetails>{
 
+class _adddetails extends State<Adddetails> {
   FirebaseUser guser;
-  bool _isloading=false;
+  bool _isloading = false;
 
   final _formKey = new GlobalKey<FormState>();
   final TextEditingController _filteraddress = new TextEditingController();
@@ -35,25 +29,24 @@ class _adddetails extends State<Adddetails>{
   LoginSignUpPage _loginSignUpPage;
   String _errorMessageStep2;
 
-  String address='';
+  String address = '';
 
   bool _terms = false;
-  bool _buildwaitaftervalidat =false;
+  bool _buildwaitaftervalidat = false;
 
   String _password;
 
-  String phone='';
+  String phone = '';
 
-  String name='';
+  String name = '';
 
-  _adddetails(){
+  _adddetails() {
     _filtername.addListener(() {
       if (_filtername.text.isEmpty) {
         setState(() {
           name = "";
         });
-      }
-      else {
+      } else {
         name = _filtername.text;
       }
     });
@@ -62,8 +55,7 @@ class _adddetails extends State<Adddetails>{
         setState(() {
           phone = "";
         });
-      }
-      else {
+      } else {
         phone = _filterphone.text;
       }
     });
@@ -72,8 +64,7 @@ class _adddetails extends State<Adddetails>{
         setState(() {
           address = "";
         });
-      }
-      else {
+      } else {
         address = _filteraddress.text;
       }
     });
@@ -83,7 +74,7 @@ class _adddetails extends State<Adddetails>{
   void initState() {
     super.initState();
     widget.auth.getCurrentUser().then((user) {
-      setState(()  {
+      setState(() {
         if (user != null) {
           _userId = user?.uid;
           guser = user;
@@ -93,9 +84,9 @@ class _adddetails extends State<Adddetails>{
     });
     // TODO: implement isuper.initState();
   }
+
   void adduserdata(FirebaseUser user) async {
-    Firestore.instance.collection("users").document(user.uid)
-        .setData({
+    Firestore.instance.collection("users").document(user.uid).setData({
       'Email': user.email,
       'Name': user.displayName != null ? user.displayName : name,
       'address': address,
@@ -103,44 +94,37 @@ class _adddetails extends State<Adddetails>{
       'passwd': _password != null ? _password : "passwd"
     });
     setnext();
-
   }
 
-  void setnext(){
+  void setnext() {
     setState(() {
-
-      this._buildwaitaftervalidat =true;
-
-
-
+      this._buildwaitaftervalidat = true;
     });
-
   }
+
   Future<bool> isuserdata_present(String uid) async {
     bool check = false;
 
-    DocumentReference myref = Firestore.instance.collection("users").document(
-        uid);
+    DocumentReference myref =
+        Firestore.instance.collection("users").document(uid);
     await myref.get().then((Doc) {
       checkdoc = check = Doc.exists;
       print("check:" + check.toString());
       return check;
     });
   }
+
   bool _validateAndSave() {
     final form = _formKey.currentState;
     if (form.validate()) {
       form.save();
-     //this.widget.onSignedIn();
+      //this.widget.onSignedIn();
       //Navigator.pop(context);
-
 
       return true;
     }
     return false;
   }
-
-
 
   Widget _showErrorMessageStep2() {
     if (_errorMessageStep2 != null && _errorMessageStep2.length > 0) {
@@ -160,51 +144,47 @@ class _adddetails extends State<Adddetails>{
   }
 
   void performCheck(FirebaseUser guser) {
-
     //print(phone.length);
     //print(address.length);
-    if (address != null && phone != null && address.length > 5 &&
-        phone.length == 10 && name != null && name.length > 3) {
+    if (address != null &&
+        phone != null &&
+        address.length > 5 &&
+        phone.length == 10 &&
+        name != null &&
+        name.length > 3) {
       //Navigator.of(context).pop();
 
       adduserdata(guser);
-      if(_validateAndSave()){
+      if (_validateAndSave()) {
         print("form validated");
       }
       widget.onSignedIn();
       setState(() {
-        _isloading=false;
+        _isloading = false;
       });
       //initState();
-      if(!widget.first){
+      if (!widget.first) {
         Navigator.pop(context);
       }
-
-
-    }
-    else {
+    } else {
       if (name == null || name.length < 3) {
         setState(() {
           // Navigator.of(context).pop(context);
-          _isloading=false;
+          _isloading = false;
           _errorMessageStep2 = "Invalid Name";
           // ShowaddAddressdailog();
         });
-      }
-
-      else if (address == null || address.length < 5) {
+      } else if (address == null || address.length < 5) {
         setState(() {
           //Navigator.of(context).pop(context);
-          _isloading=false;
+          _isloading = false;
           _errorMessageStep2 = "Invalid Address";
           // ShowaddAddressdailog();
-
         });
-      }
-      else if (phone == null || phone.length < 10||phone.length>10) {
+      } else if (phone == null || phone.length < 10 || phone.length > 10) {
         setState(() {
           // Navigator.of(context).pop(context);
-          _isloading=false;
+          _isloading = false;
           _errorMessageStep2 = "Invalid Phone";
           // ShowaddAddressdailog();
         });
@@ -219,9 +199,7 @@ class _adddetails extends State<Adddetails>{
         });
       }*/
     }
-
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -236,14 +214,10 @@ class _adddetails extends State<Adddetails>{
         child: new Form(
           key: _formKey,
           child: ListView(
-
-
             shrinkWrap: true,
             children: <Widget>[
-
               new Padding(
-                padding: const EdgeInsets.fromLTRB(
-                    0.0, 30.0, 0.0, 0.0),
+                padding: const EdgeInsets.fromLTRB(0.0, 30.0, 0.0, 0.0),
                 child: new TextField(
                   controller: _filtername,
                   keyboardType: TextInputType.text,
@@ -251,29 +225,22 @@ class _adddetails extends State<Adddetails>{
                   decoration: InputDecoration(
                     prefixIcon: new Icon(Icons.person_pin),
                     hintText: "Enter your Name",
-
-
                   ),
                 ),
               ),
               new Padding(
-                padding: const EdgeInsets.fromLTRB(
-                    0.0, 30.0, 0.0, 0.0),
-                child:
-                new TextField(
+                padding: const EdgeInsets.fromLTRB(0.0, 30.0, 0.0, 0.0),
+                child: new TextField(
                   controller: _filteraddress,
                   scrollPadding: const EdgeInsets.all(20.0),
                   decoration: InputDecoration(
                     prefixIcon: new Icon(Icons.location_city),
                     hintText: " Enter your full address",
-
-
                   ),
                 ),
               ),
               new Padding(
-                padding: const EdgeInsets.fromLTRB(
-                    0.0, 30.0, 0.0, 0.0),
+                padding: const EdgeInsets.fromLTRB(0.0, 30.0, 0.0, 0.0),
                 child: new TextField(
                   controller: _filterphone,
                   keyboardType: TextInputType.phone,
@@ -282,14 +249,14 @@ class _adddetails extends State<Adddetails>{
                     prefixIcon: new Icon(Icons.phone),
                     hintText: "Enter your phone no",
                     prefix: new Text("+91"),
-
-
                   ),
                 ),
               ),
-              new Container(height: 10.0,),
+              new Container(
+                height: 10.0,
+              ),
 
-            /*  new Row(
+              /*  new Row(
                 children: <Widget>[
 
                   new Checkbox(
@@ -313,42 +280,36 @@ class _adddetails extends State<Adddetails>{
                 ],
               ),*/
               _showErrorMessageStep2(),
-             _showPrimaryButton(),
-
-
+              _showPrimaryButton(),
             ],
           ),
         ),
       ),
-
     );
   }
 
-  Widget _showCircularProgress(){
+  Widget _showCircularProgress() {
     if (_isloading) {
       return Center(child: CircularProgressIndicator());
-    } return Container(height: 0.0, width: 0.0,);
-
+    }
+    return Container(
+      height: 0.0,
+      width: 0.0,
+    );
   }
 
   Widget _showPrimaryButton() {
     return new Padding(
-
-
         padding: EdgeInsets.fromLTRB(0.0, 45.0, 0.0, 0.0),
         child: SizedBox(
           height: 40.0,
-
-
           child: new RaisedButton(
             elevation: 7.0,
             shape: new RoundedRectangleBorder(
                 borderRadius: new BorderRadius.circular(30.0)),
             color: Colors.pinkAccent,
-            child:
-            new Text('Sumbmit',
-                style: new TextStyle(fontSize: 20.0, color: Colors.white))
-            ,
+            child: new Text('Sumbmit',
+                style: new TextStyle(fontSize: 20.0, color: Colors.white)),
             onPressed: () {
               setState(() {
                 _isloading = true;
@@ -356,8 +317,6 @@ class _adddetails extends State<Adddetails>{
               performCheck(guser);
             },
           ),
-        )
-    );
+        ));
   }
-
 }

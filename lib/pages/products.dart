@@ -4,12 +4,8 @@ import 'package:firebase_database/ui/firebase_animated_list.dart';
 import 'package:zebo/productsdata.dart';
 import 'package:zebo/firebase_db_util.dart';
 
-
-
 class Products extends StatefulWidget {
   Products({Key key, this.title}) : super(key: key);
-
-
 
   // This widget is the home page of your application. It is stateful, meaning
   // that it has a State object (defined below) that contains fields that affect
@@ -32,7 +28,6 @@ class _ProductsState extends State<Products> {
 
   // ignore: non_constant_identifier_names
 
-
   @override
   void initState() {
     // TODO: implement initState
@@ -46,6 +41,7 @@ class _ProductsState extends State<Products> {
     // TODO: implement dispose
     super.dispose();
   }
+
   bool _cartopen = false;
   bool _loading = false;
   bool _cartswitch = false;
@@ -53,11 +49,9 @@ class _ProductsState extends State<Products> {
   Icon _carticon = new Icon(Icons.shopping_cart);
   final TextEditingController _filter = new TextEditingController();
   String _searchText = "";
-  Widget _appBarTitle = new Text( 'Products' );
+  Widget _appBarTitle = new Text('Products');
   FirebaseDatabase database = new FirebaseDatabase();
   Widget _appbody;
-
-
 
   _ProductsState() {
     _filter.addListener(() {
@@ -69,11 +63,6 @@ class _ProductsState extends State<Products> {
       } else {
         setState(() {
           _searchText = _filter.text;
-
-
-
-
-
         });
       }
     });
@@ -91,21 +80,10 @@ class _ProductsState extends State<Products> {
     return Scaffold(
       appBar: AppBar(
         title: this._appBarTitle,
-
-
-
       ),
-
-
-
       body: _buildList(),
-
-
     );
   }
-
-
-
 
   Future<String> _refresh() async {
     await new Future.delayed(new Duration(seconds: 3), () {
@@ -116,63 +94,49 @@ class _ProductsState extends State<Products> {
     });
   }
 
-  normaldata(){
-    return new RefreshIndicator(child: new FirebaseAnimatedList(query: databaseUtil.getUser(),
-        itemBuilder: (BuildContext context, DataSnapshot snapshot,
-            Animation<double> animation, int index) {
-          return new SizeTransition(
-            sizeFactor: animation,
-            child: showUser(snapshot),
-          );
-        }
-
-    )
-      , onRefresh: _refresh,
+  normaldata() {
+    return new RefreshIndicator(
+      child: new FirebaseAnimatedList(
+          query: databaseUtil.getUser(),
+          itemBuilder: (BuildContext context, DataSnapshot snapshot,
+              Animation<double> animation, int index) {
+            return new SizeTransition(
+              sizeFactor: animation,
+              child: showUser(snapshot),
+            );
+          }),
+      onRefresh: _refresh,
       displacement: 20.0,
       backgroundColor: Colors.black,
     );
   }
 
-  cartdata(){
+  cartdata() {
     return new Container();
   }
-
-
-
 
   _buildList() {
     //print(_loading);
 
-
-      return normaldata();
-
-
-
-
+    return normaldata();
   }
-
-
-
 
   Widget showUser(DataSnapshot res) {
     productsdata pdata = productsdata.fromSnapshot(res);
 
     var item = new Card(
-
-
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
           ListTile(
-            leading: Image.network(pdata.image,height: 100.0,width: 100.0,),
+            leading: Image.network(
+              pdata.image,
+              height: 100.0,
+              width: 100.0,
+            ),
             title: Text(pdata.title),
-            subtitle: Text("Rs "+pdata.price),
-
-            onTap: (){
-
-            },
-
-
+            subtitle: Text("Rs " + pdata.price),
+            onTap: () {},
           ),
           ButtonTheme.bar(
             // make buttons use the appropriate styles for cards
@@ -184,7 +148,6 @@ class _ProductsState extends State<Products> {
                     /* ... */
                   },
                 ),
-
               ],
             ),
           ),
@@ -193,22 +156,4 @@ class _ProductsState extends State<Products> {
     );
     return item;
   }
-
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

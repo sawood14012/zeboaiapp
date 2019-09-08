@@ -11,8 +11,13 @@ import 'package:zebo/pages/products.dart';
 import 'package:zebo/pages/chatbot.dart';
 
 class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title, this.userId, this.auth, this.onSignedOut})
-      : super(key: key);
+  MyHomePage({
+    Key key,
+    this.title,
+    this.userId,
+    this.auth,
+    this.onSignedOut,
+  }) : super(key: key);
 
   // This widget is the home page of your application. It is stateful, meaning
   // that it has a State object (defined below) that contains fields that affect
@@ -36,19 +41,34 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
   bool _anchorToBottom = false;
 
   var appColors = [
-    Color.fromRGBO(231, 129, 109, 1.0),
-    Color.fromRGBO(99, 138, 223, 1.0),
-    Color.fromRGBO(111, 194, 173, 1.0)
+    Color.fromRGBO(
+      231,
+      129,
+      109,
+      1.0,
+    ),
+    Color.fromRGBO(
+      99,
+      138,
+      223,
+      1.0,
+    ),
+    Color.fromRGBO(
+      111,
+      194,
+      173,
+      1.0,
+    )
   ];
   var cardIndex = 0;
   ScrollController scrollController;
-  var currentColor = Color.fromRGBO(231, 129, 109, 1.0);
+  var currentColor = Color.fromRGBO(
+    231,
+    129,
+    109,
+    1.0,
+  );
   String name = "";
-  var cardsList = [
-    CardItemModel("Acne Analysis", Icons.account_circle, 9, 1.0),
-    CardItemModel("Chat bot", Icons.work, 12, 1.0),
-    CardItemModel("Medical records", Icons.home, 7, 1.0)
-  ];
 
   AnimationController animationController;
   ColorTween colorTween;
@@ -67,11 +87,15 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     scrollController = new ScrollController();
     DocumentReference myref =
         Firestore.instance.collection("users").document(widget.userId);
-    myref.get().then((Doc) {
-      setState(() {
-        name = Doc.data['Name'];
-      });
-    });
+    myref.get().then(
+      (Doc) {
+        setState(
+          () {
+            name = Doc.data['Name'];
+          },
+        );
+      },
+    );
   }
 
   @override
@@ -93,6 +117,14 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
+    var cardsList = [
+      CardItemModel("Acne Analysis", Icons.account_circle, 9, 1.0,
+          MaterialPageRoute(builder: (context) => FormPage())),
+      CardItemModel("Chat bot", Icons.work, 12, 1.0,
+          MaterialPageRoute(builder: (context) => MyButton())),
+      CardItemModel("Medical records", Icons.home, 7, 1.0,
+          MaterialPageRoute(builder: (context) => Medicalhistory()))
+    ];
     //  _appbody = normaldata();
 
     // This method is rerun every time setState is called, for instance as done
@@ -151,9 +183,13 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
               onTap: () {
                 Navigator.pop(context);
                 Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => FormPage(id: widget.userId)));
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => FormPage(
+                      id: widget.userId,
+                    ),
+                  ),
+                );
               },
             ),
             ListTile(
@@ -161,9 +197,11 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
               onTap: () {
                 Navigator.pop(context);
                 Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => MyButton()));
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => MyButton(),
+                  ),
+                );
               },
             ),
             ListTile(
@@ -173,9 +211,11 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                 // ...
                 Navigator.pop(context);
                 Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => Medicalhistory(id: widget.userId)));
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => Medicalhistory(id: widget.userId),
+                  ),
+                );
               },
             ),
             ListTile(
@@ -185,9 +225,11 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                 // ...
                 Navigator.pop(context);
                 Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) =>Products()));
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => Products(),
+                  ),
+                );
               },
             ),
             ListTile(
@@ -196,28 +238,34 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                 widget.auth.signOut();
                 Navigator.pop(context);
                 Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => RootPage(auth: widget.auth)));
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => RootPage(auth: widget.auth),
+                  ),
+                );
               },
             ),
           ],
         ),
       ),
-      body: new Center(
+      body: Center(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             Row(),
             Padding(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 64.0, vertical: 32.0),
+              padding: const EdgeInsets.symmetric(
+                horizontal: 64.0,
+                vertical: 32.0,
+              ),
               child: Container(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 16.0),
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 16.0,
+                      ),
                       child: Icon(
                         Icons.local_hospital,
                         size: 45.0,
@@ -225,18 +273,26 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                       ),
                     ),
                     Padding(
-                      padding: const EdgeInsets.fromLTRB(0.0, 16.0, 0.0, 12.0),
+                      padding: const EdgeInsets.fromLTRB(
+                        0.0,
+                        16.0,
+                        0.0,
+                        12.0,
+                      ),
                       child: Text(
                         "Hi," + name + " !",
                         style: TextStyle(
-                            fontSize: 30.0,
-                            color: Colors.white,
-                            fontWeight: FontWeight.w400),
+                          fontSize: 30.0,
+                          color: Colors.white,
+                          fontWeight: FontWeight.w400,
+                        ),
                       ),
                     ),
                     Text(
                       "Hope you\'r feeling good",
-                      style: TextStyle(color: Colors.white),
+                      style: TextStyle(
+                        color: Colors.white,
+                      ),
                     ),
                   ],
                 ),
@@ -250,16 +306,18 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                   child: ListView.builder(
                     physics: NeverScrollableScrollPhysics(),
                     itemCount: 3,
-
-
-
                     controller: scrollController,
                     scrollDirection: Axis.horizontal,
                     itemBuilder: (context, position) {
-
                       return GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                              context, cardsList[position].pageRoute);
+                        },
                         child: Padding(
-                          padding: const EdgeInsets.all(8.0),
+                          padding: const EdgeInsets.all(
+                            8.0,
+                          ),
                           child: Card(
                             child: Container(
                               width: 250.0,
@@ -269,7 +327,9 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                                     MainAxisAlignment.spaceBetween,
                                 children: <Widget>[
                                   Padding(
-                                    padding: const EdgeInsets.all(8.0),
+                                    padding: const EdgeInsets.all(
+                                      8.0,
+                                    ),
                                     child: Row(
                                       mainAxisAlignment:
                                           MainAxisAlignment.spaceBetween,
@@ -286,14 +346,18 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                                     ),
                                   ),
                                   Padding(
-                                    padding: const EdgeInsets.all(8.0),
+                                    padding: const EdgeInsets.all(
+                                      8.0,
+                                    ),
                                     child: Column(
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
                                       children: <Widget>[
                                         Padding(
                                           padding: const EdgeInsets.symmetric(
-                                              horizontal: 8.0, vertical: 4.0),
+                                            horizontal: 8.0,
+                                            vertical: 4.0,
+                                          ),
                                           child: Text(
                                             "${cardsList[position].cardTitle}",
                                             style: TextStyle(fontSize: 28.0),
@@ -313,7 +377,10 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                               ),
                             ),
                             shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10.0)),
+                              borderRadius: BorderRadius.circular(
+                                10.0,
+                              ),
+                            ),
                           ),
                         ),
                         onHorizontalDragEnd: (details) {

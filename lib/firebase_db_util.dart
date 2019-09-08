@@ -13,7 +13,7 @@ class FirebaseDatabaseUtil {
   DatabaseError error;
 
   static final FirebaseDatabaseUtil _instance =
-  new FirebaseDatabaseUtil.internal();
+      new FirebaseDatabaseUtil.internal();
 
   FirebaseDatabaseUtil.internal();
 
@@ -23,27 +23,24 @@ class FirebaseDatabaseUtil {
 
   void initState() {
     // Demonstrates configuring to the database using a file
-   // _counterRef = FirebaseDatabase.instance.reference().child('counter');
+    // _counterRef = FirebaseDatabase.instance.reference().child('counter');
     // Demonstrates configuring the database directly
 
     _userRef = database.reference().child('medicalhistory');
     _userRef1 = database.reference().child("products");
-    
-   // database.reference().child('counter').once().then((DataSnapshot snapshot) {
-     // print('Connected to second database and read ${snapshot.value}');
+
+    // database.reference().child('counter').once().then((DataSnapshot snapshot) {
+    // print('Connected to second database and read ${snapshot.value}');
     //});
     database.setPersistenceEnabled(true);
     database.setPersistenceCacheSizeBytes(10000000);
     //_counterRef.keepSynced(true);
     _userRef.keepSynced(true);
-
   }
 
   DatabaseError getError() {
     return error;
   }
-
-
 
   DatabaseReference getUser() {
     return _userRef1;
@@ -52,14 +49,12 @@ class FirebaseDatabaseUtil {
   DatabaseReference getUser1(uid) {
     var dat = {"uid": uid};
 
-    return  _userRef;
+    return _userRef;
   }
 
-  DatabaseReference getsearch(String s){
+  DatabaseReference getsearch(String s) {
     DatabaseReference _Ref;
     _Ref = database.reference().child('blog').startAt(s).endAt(s);
     return _Ref;
-
   }
-
 }

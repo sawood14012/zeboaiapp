@@ -23,8 +23,6 @@ class MyApp extends StatelessWidget {
           // is not restarted.
           primarySwatch: Colors.cyan,
         ),
-        home: new RootPage(auth: new Auth())
-    );
-
+        home: new RootPage(auth: new Auth()));
   }
 }

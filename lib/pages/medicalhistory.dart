@@ -5,13 +5,8 @@ import 'package:zebo/productsdata.dart';
 import 'package:zebo/firebase_db_util.dart';
 import 'package:zebo/medicaldata.dart';
 
-
-
-
 class Medicalhistory extends StatefulWidget {
-  Medicalhistory({Key key, this.title,this.id}) : super(key: key);
-
-
+  Medicalhistory({Key key, this.title, this.id}) : super(key: key);
 
   // This widget is the home page of your application. It is stateful, meaning
   // that it has a State object (defined below) that contains fields that affect
@@ -35,7 +30,6 @@ class _MedicalhistoryState extends State<Medicalhistory> {
 
   // ignore: non_constant_identifier_names
 
-
   @override
   void initState() {
     // TODO: implement initState
@@ -49,6 +43,7 @@ class _MedicalhistoryState extends State<Medicalhistory> {
     // TODO: implement dispose
     super.dispose();
   }
+
   bool _cartopen = false;
   bool _loading = false;
   bool _cartswitch = false;
@@ -56,11 +51,9 @@ class _MedicalhistoryState extends State<Medicalhistory> {
   Icon _carticon = new Icon(Icons.shopping_cart);
   final TextEditingController _filter = new TextEditingController();
   String _searchText = "";
-  Widget _appBarTitle = new Text( 'Medical history' );
+  Widget _appBarTitle = new Text('Medical history');
   FirebaseDatabase database = new FirebaseDatabase();
   Widget _appbody;
-
-
 
   _MedicalhistoryState() {
     _filter.addListener(() {
@@ -72,11 +65,6 @@ class _MedicalhistoryState extends State<Medicalhistory> {
       } else {
         setState(() {
           _searchText = _filter.text;
-
-
-
-
-
         });
       }
     });
@@ -94,18 +82,10 @@ class _MedicalhistoryState extends State<Medicalhistory> {
     return Scaffold(
       appBar: AppBar(
         title: this._appBarTitle,
-
       ),
-
-
       body: _buildList(),
-
-
     );
   }
-
-
-
 
   Future<String> _refresh() async {
     await new Future.delayed(new Duration(seconds: 3), () {
@@ -116,89 +96,72 @@ class _MedicalhistoryState extends State<Medicalhistory> {
     });
   }
 
-  normaldata(){
-    return new RefreshIndicator(child: new FirebaseAnimatedList(query: FirebaseDatabase.instance.reference().child("medicalhistory").orderByChild("uid").startAt(widget.id).endAt(widget.id),
-        itemBuilder: (BuildContext context, DataSnapshot snapshot,
-            Animation<double> animation, int index) {
-          return new SizeTransition(
-            sizeFactor: animation,
-            child: showUser(snapshot),
-          );
-        }
-
-    )
-      , onRefresh: _refresh,
+  normaldata() {
+    return new RefreshIndicator(
+      child: new FirebaseAnimatedList(
+          query: FirebaseDatabase.instance
+              .reference()
+              .child("medicalhistory")
+              .orderByChild("uid")
+              .startAt(widget.id)
+              .endAt(widget.id),
+          itemBuilder: (BuildContext context, DataSnapshot snapshot,
+              Animation<double> animation, int index) {
+            return new SizeTransition(
+              sizeFactor: animation,
+              child: showUser(snapshot),
+            );
+          }),
+      onRefresh: _refresh,
       displacement: 20.0,
       backgroundColor: Colors.black,
     );
   }
 
-  cartdata(){
+  cartdata() {
     return new Container();
   }
 
-
-
-
   _buildList() {
     //print(_loading);
-    
 
-   
-
-      return normaldata();
-
-
-
-
-
-
+    return normaldata();
   }
-
-
-
 
   Widget showUser(DataSnapshot res) {
     medicaldata pdata = medicaldata.fromSnapshot(res);
 
     var item = new Card(
-
-
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
           ListTile(
-            leading: Image.network(pdata.img,height: 100.0,width: 100.0,),
+            leading: Image.network(
+              pdata.img,
+              height: 100.0,
+              width: 100.0,
+            ),
             title: Text(pdata.uid),
-            subtitle: Text(pdata.var0 +" "+pdata.var1 +" "+ pdata.var2 +" "+ pdata.var3 +" "+pdata.var4 +" "+ pdata.var5 +" "+pdata.var6 +" "+ pdata.var7),
-
-            onTap: (){
-              
-            },
-
-
+            subtitle: Text(pdata.var0 +
+                " " +
+                pdata.var1 +
+                " " +
+                pdata.var2 +
+                " " +
+                pdata.var3 +
+                " " +
+                pdata.var4 +
+                " " +
+                pdata.var5 +
+                " " +
+                pdata.var6 +
+                " " +
+                pdata.var7),
+            onTap: () {},
           ),
         ],
       ),
     );
     return item;
   }
-
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

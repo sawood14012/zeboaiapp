@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 class MyButton extends StatefulWidget {
   @override
   MyButtonState createState() {
@@ -8,7 +9,7 @@ class MyButton extends StatefulWidget {
 
 class MyButtonState extends State<MyButton> {
   int counter = 0;
-  List<String> strings = ['Flutter', 'is', 'cool', "and","awesome!"];
+  List<String> strings = ['Flutter', 'is', 'cool', "and", "awesome!"];
   String displayedString = "Hello World!";
 
   void onPressOfButton() {

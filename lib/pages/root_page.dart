@@ -12,8 +12,7 @@ class RootPage extends StatefulWidget {
   RootPage({this.auth});
 
   final BaseAuth auth;
-  bool checkdoc=false;
-
+  bool checkdoc = false;
 
   @override
   State<StatefulWidget> createState() => new _RootPageState();
@@ -39,16 +38,16 @@ class _RootPageState extends State<RootPage> {
   LoginSignUpPage _loginSignUpPage;
   String _errorMessageStep2;
 
-  String address='';
+  String address = '';
 
   bool _terms = false;
-  bool _buildwaitaftervalidat =false;
+  bool _buildwaitaftervalidat = false;
 
   String _password;
 
-  String phone='';
+  String phone = '';
 
-  String name='';
+  String name = '';
 
   _RootPageState() {
     _filtername.addListener(() {
@@ -56,8 +55,7 @@ class _RootPageState extends State<RootPage> {
         setState(() {
           name = "";
         });
-      }
-      else {
+      } else {
         name = _filtername.text;
       }
     });
@@ -66,8 +64,7 @@ class _RootPageState extends State<RootPage> {
         setState(() {
           phone = "";
         });
-      }
-      else {
+      } else {
         phone = _filterphone.text;
       }
     });
@@ -76,47 +73,40 @@ class _RootPageState extends State<RootPage> {
         setState(() {
           address = "";
         });
-      }
-      else {
+      } else {
         address = _filteraddress.text;
       }
     });
   }
 
   @override
-  void initState()  {
+  void initState() {
     //isuserdata_present()
     _terms = false;
     super.initState();
 
-
     _errorMessageStep2 = "";
     widget.auth.getCurrentUser().then((user) {
-      setState(()  {
+      setState(() {
         if (user != null) {
           _userId = user?.uid;
           guser = user;
           //isuserdata_present(_userId);
           checkdoc = widget.auth.checkdoc;
         }
-        if(user?.uid ==null){
+        if (user?.uid == null) {
           authStatus = AuthStatus.NOT_LOGGED_IN;
-        }
-        else if(user.uid !=null && user.uid.length >0 &&checkdoc){
-          authStatus=AuthStatus.LOGGED_IN;
-        }
-        else{
-          authStatus= AuthStatus.NO_DATA;
+        } else if (user.uid != null && user.uid.length > 0 && checkdoc) {
+          authStatus = AuthStatus.LOGGED_IN;
+        } else {
+          authStatus = AuthStatus.NO_DATA;
         }
       });
     });
   }
 
-
-
   void adduserdata(FirebaseUser user) async {
-    Firestore.instance.collection("users").document(user.uid)
-        .setData({
+    Firestore.instance.collection("users").document(user.uid).setData({
       'Email': user.email,
       'Name': user.displayName != null ? user.displayName : name,
       'address': address,
@@ -124,21 +114,15 @@ class _RootPageState extends State<RootPage> {
       'passwd': _password != null ? _password : "passwd"
     });
     setnext();
-
   }
 
-  void setnext(){
+  void setnext() {
     setState(() {
-
-      this._buildwaitaftervalidat =true;
+      this._buildwaitaftervalidat = true;
 
       this.authStatus = AuthStatus.LOGGED_IN;
-
     });
-
   }
-
-
 
   Widget _showErrorMessageStep2() {
     if (_errorMessageStep2 != null && _errorMessageStep2.length > 0) {
@@ -158,44 +142,42 @@ class _RootPageState extends State<RootPage> {
   }
 
   void performCheck(FirebaseUser guser) {
-
     //print(phone.length);
     //print(address.length);
-    if (_terms && address != null && phone != null && address.length > 5 &&
-        phone.length == 10 && name != null && name.length > 3) {
+    if (_terms &&
+        address != null &&
+        phone != null &&
+        address.length > 5 &&
+        phone.length == 10 &&
+        name != null &&
+        name.length > 3) {
       //Navigator.of(context).pop();
 
       adduserdata(guser);
-      if(_validateAndSave()){
+      if (_validateAndSave()) {
         print("form validated");
       }
       initState();
-    }
-    else {
+    } else {
       if (name == null || name.length < 3) {
         setState(() {
           // Navigator.of(context).pop(context);
           _errorMessageStep2 = "Invalid Name";
           // ShowaddAddressdailog();
         });
-      }
-
-      else if (address == null || address.length < 5) {
+      } else if (address == null || address.length < 5) {
         setState(() {
           //Navigator.of(context).pop(context);
           _errorMessageStep2 = "Invalid Address";
           // ShowaddAddressdailog();
-
         });
-      }
-      else if (phone == null || phone.length < 10) {
+      } else if (phone == null || phone.length < 10) {
         setState(() {
           // Navigator.of(context).pop(context);
           _errorMessageStep2 = "Invalid Phone";
           // ShowaddAddressdailog();
         });
-      }
-      else if (!_terms) {
+      } else if (!_terms) {
         setState(() {
           // Navigator.of(context).pop(context);
           _errorMessageStep2 = "Must aggree Terms And Conditions";
@@ -203,125 +185,121 @@ class _RootPageState extends State<RootPage> {
         });
       }
     }
-
   }
 
-    void _onLoggedIn() {
-      print(authStatus);
-      widget.auth.getCurrentUser().then((user) {
-        setState(() {
-          _userId = user.uid.toString();
-        });
-      });
+  void _onLoggedIn() {
+    print(authStatus);
+    widget.auth.getCurrentUser().then((user) {
       setState(() {
-        authStatus = AuthStatus.LOGGED_IN;
+        _userId = user.uid.toString();
       });
-     // isuserdata_present(_userId);
+    });
+    setState(() {
+      authStatus = AuthStatus.LOGGED_IN;
+    });
+    // isuserdata_present(_userId);
 
-        print(authStatus);
+    print(authStatus);
+  }
+
+  void _onSignedOut() {
+    setState(() {
+      authStatus = AuthStatus.NOT_LOGGED_IN;
+      _userId = "";
+    });
+  }
+
+  Widget _buildwait() {}
+
+  Widget _buildWaitingScreen() {
+    print("in waiting");
+    if (_buildwaitaftervalidat) {
+      return Scaffold(
+        body: Container(
+          alignment: Alignment.center,
+          child: CircularProgressIndicator(),
+        ),
+      );
+    } else {
+      return Scaffold(
+        body: Container(
+          alignment: Alignment.center,
+          child: CircularProgressIndicator(),
+        ),
+      );
     }
+  }
 
-    void _onSignedOut() {
-      setState(() {
-        authStatus = AuthStatus.NOT_LOGGED_IN;
-        _userId = "";
-      });
-    }
+  Future<bool> isuserdata_present(String uid) async {
+    bool check = false;
 
-    Widget _buildwait(){
+    DocumentReference myref =
+        Firestore.instance.collection("users").document(uid);
+    await myref.get().then((Doc) {
+      checkdoc = check = Doc.exists;
+      print("check:" + check.toString());
+      return check;
+    });
+  }
 
-    }
-
-    Widget _buildWaitingScreen() {
-      print("in waiting");
-      if(_buildwaitaftervalidat){
-        return Scaffold(
-          body: Container(
-            alignment: Alignment.center,
-            child: CircularProgressIndicator(),
-          ),
-        );
-      }
-      else{
-        return Scaffold(
-          body: Container(
-            alignment: Alignment.center,
-            child: CircularProgressIndicator(),
-          ),
-        );
-
-      }
-
-    }
-
-    Future<bool> isuserdata_present(String uid) async {
-      bool check = false;
-
-      DocumentReference myref = Firestore.instance.collection("users").document(
-          uid);
-      await myref.get().then((Doc) {
-        checkdoc = check = Doc.exists;
-        print("check:" + check.toString());
-        return check;
-      });
-    }
   bool _validateAndSave() {
     final form = _formKey.currentState;
     if (form.validate()) {
       form.save();
-      Navigator.push(context,
-      MaterialPageRoute(builder: (context) => MyHomePage(
-        userId: _userId,
-        auth: widget.auth,
-        onSignedOut: _onSignedOut,)));
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => MyHomePage(
+                    userId: _userId,
+                    auth: widget.auth,
+                    onSignedOut: _onSignedOut,
+                  )));
       //Navigator.pop(context);
       //_onLoggedIn();
-
 
       return true;
     }
     return false;
   }
 
-    @override
-    Widget build(BuildContext context) {
+  @override
+  Widget build(BuildContext context) {
+    switch (authStatus) {
+      case AuthStatus.NOT_DETERMINED:
+        return _buildWaitingScreen();
+        break;
+      case AuthStatus.NOT_LOGGED_IN:
+        return new LoginSignUpPage(
+          auth: widget.auth,
+          onSignedIn: _onLoggedIn,
+        );
+        break;
+      case AuthStatus.NO_DATA:
+        return new Adddetails(
+          auth: widget.auth,
+          onSignedIn: _onLoggedIn,
+          first: true,
+        );
+      case AuthStatus.LOGGED_IN:
+        if (_userId.length > 0 && _userId != null) {
+          isuserdata_present(_userId).then((bval) {
+            print(checkdoc);
+          });
+          print(checkdoc.toString() + ": after");
 
-      switch (authStatus) {
-        case AuthStatus.NOT_DETERMINED:
-          return _buildWaitingScreen();
-          break;
-        case AuthStatus.NOT_LOGGED_IN:
-          return new LoginSignUpPage(
+          // Navigator.of(context).pop();
+          return new MyHomePage(
+            userId: _userId,
             auth: widget.auth,
-            onSignedIn: _onLoggedIn,
+            onSignedOut: _onSignedOut,
           );
-          break;
-        case AuthStatus.NO_DATA:
-          return new Adddetails(auth: widget.auth,onSignedIn: _onLoggedIn,first: true,);
-        case AuthStatus.LOGGED_IN:
-          if (_userId.length > 0 && _userId != null)  {
-
-            isuserdata_present(_userId).then((bval){
-              print(checkdoc);
-
-            });
-            print(checkdoc.toString() +": after");
-
-
-             // Navigator.of(context).pop();
-              return new MyHomePage(
-                userId: _userId,
-                auth: widget.auth,
-                onSignedOut: _onSignedOut,
-              );
-
-          } else
-            return _buildWaitingScreen();
-          break;
-        default:
+        } else
           return _buildWaitingScreen();
-      }
+        break;
+      default:
+        return _buildWaitingScreen();
     }
+  }
 
   Widget _showPrimaryButton() {
     return new Padding(
@@ -333,16 +311,12 @@ class _RootPageState extends State<RootPage> {
             shape: new RoundedRectangleBorder(
                 borderRadius: new BorderRadius.circular(30.0)),
             color: Colors.blue,
-            child:
-            new Text('Sumbmit',
-                style: new TextStyle(fontSize: 20.0, color: Colors.white))
-            ,
+            child: new Text('Sumbmit',
+                style: new TextStyle(fontSize: 20.0, color: Colors.white)),
             onPressed: () {
               performCheck(guser);
             },
           ),
         ));
   }
-
-
-  }
+}

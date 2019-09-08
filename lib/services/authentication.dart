@@ -4,14 +4,13 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 abstract class BaseAuth {
-
   Future<String> signIn(String email, String password);
 
   Future<FirebaseUser> signUp(String email, String password);
 
   Future<FirebaseUser> getCurrentUser();
 
-   bool checkdoc=false;
+  bool checkdoc = false;
 
   Future<void> sendEmailVerification();
 
@@ -23,7 +22,7 @@ abstract class BaseAuth {
 
   Future<FirebaseUser> Gsignin();
   Future<String> Forgotpassword(String email);
- // Future<void> sendCodeToPhoneNumber(String number);
+  // Future<void> sendCodeToPhoneNumber(String number);
   //Future<String> testSignInWithPhoneNumber(String smsCode);
 }
 
@@ -93,10 +92,10 @@ class Auth implements BaseAuth {
   Future<bool> isuserdata_present(String uid) async {
     bool check = false;
 
-    DocumentReference myref = Firestore.instance.collection("users").document(
-        uid);
+    DocumentReference myref =
+        Firestore.instance.collection("users").document(uid);
     await myref.get().then((Doc) {
-     checkdoc = check = Doc.exists;
+      checkdoc = check = Doc.exists;
       print("check:" + check.toString());
       return check;
     });
@@ -104,7 +103,7 @@ class Auth implements BaseAuth {
 
   Future<FirebaseUser> getCurrentUser() async {
     FirebaseUser user = await _firebaseAuth.currentUser();
-    if(user!=null){
+    if (user != null) {
       await isuserdata_present(user.uid);
     }
 
@@ -113,15 +112,12 @@ class Auth implements BaseAuth {
 
   Future<void> signOut() async {
     try {
-       googleSignIn.signOut();
-    }
-    catch(e){
+      googleSignIn.signOut();
+    } catch (e) {
       print(e.toString());
-    }
-    finally{
+    } finally {
       return _firebaseAuth.signOut();
     }
-
   }
 
   Future<void> sendEmailVerification() async {
@@ -135,36 +131,33 @@ class Auth implements BaseAuth {
   }
 
   @override
-  Future<FirebaseUser> Gsignin()  async{
+  Future<FirebaseUser> Gsignin() async {
     // TODO: implement Gsignin
-      GoogleSignInAccount googleSignInAccount = await googleSignIn.signIn();
+    GoogleSignInAccount googleSignInAccount = await googleSignIn.signIn();
 
-      GoogleSignInAuthentication googleAuth =
-      await googleSignInAccount.authentication;
-      final AuthCredential credential = GoogleAuthProvider.getCredential(
-        accessToken: googleAuth.accessToken,
-        idToken: googleAuth.idToken,
-      );
+    GoogleSignInAuthentication googleAuth =
+        await googleSignInAccount.authentication;
+    final AuthCredential credential = GoogleAuthProvider.getCredential(
+      accessToken: googleAuth.accessToken,
+      idToken: googleAuth.idToken,
+    );
 
-      FirebaseUser user = await _firebaseAuth.signInWithCredential(credential);
+    FirebaseUser user = await _firebaseAuth.signInWithCredential(credential);
 
-      var _user = user;
-      return user;
-    }
+    var _user = user;
+    return user;
+  }
 
   @override
   Future<String> Forgotpassword(String email) async {
     // TODO: implement Forgotpassword
     try {
-      await _firebaseAuth.sendPasswordResetEmail(email: email).whenComplete(() {
-
-      });
-    }
-    catch(e){
+      await _firebaseAuth
+          .sendPasswordResetEmail(email: email)
+          .whenComplete(() {});
+    } catch (e) {
       throw e;
     }
-
-
   }
 
   @override
@@ -172,8 +165,4 @@ class Auth implements BaseAuth {
 
   @override
   String verificationId;
-
-
-  }
-
-
+}
