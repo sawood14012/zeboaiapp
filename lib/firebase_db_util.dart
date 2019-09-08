@@ -5,6 +5,7 @@ import 'package:zebo/productsdata.dart';
 class FirebaseDatabaseUtil {
   //DatabaseReference _counterRef;
   DatabaseReference _userRef;
+  DatabaseReference _userRef1;
   //StreamSubscription<Event> _counterSubscription;
   //StreamSubscription<Event> _messagesSubscription;
   FirebaseDatabase database = new FirebaseDatabase();
@@ -26,6 +27,7 @@ class FirebaseDatabaseUtil {
     // Demonstrates configuring the database directly
 
     _userRef = database.reference().child('medicalhistory');
+    
    // database.reference().child('counter').once().then((DataSnapshot snapshot) {
      // print('Connected to second database and read ${snapshot.value}');
     //});
@@ -44,6 +46,12 @@ class FirebaseDatabaseUtil {
 
   DatabaseReference getUser() {
     return _userRef;
+  }
+
+  DatabaseReference getUser1(uid) {
+    var dat = {"uid": uid};
+
+    return  _userRef;
   }
 
   DatabaseReference getsearch(String s){
