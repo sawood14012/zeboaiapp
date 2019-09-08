@@ -45,9 +45,12 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
   var currentColor = Color.fromRGBO(231, 129, 109, 1.0);
   String name = "";
   var cardsList = [
-    CardItemModel("Acne Analysis", Icons.account_circle, 9, 1.0),
-    CardItemModel("Chat bot", Icons.work, 12, 1.0),
-    CardItemModel("Medical records", Icons.home, 7, 1.0)
+    CardItemModel("Acne Analysis", Icons.account_circle, 9, 1.0,
+        MaterialPageRoute(builder: (context) => FormPage())),
+    CardItemModel("Chat bot", Icons.work, 12, 1.0,
+        MaterialPageRoute(builder: (context) => ChatScreen())),
+    CardItemModel("Medical records", Icons.home, 7, 1.0,
+        MaterialPageRoute(builder: (context) => Medicalhistory()))
   ];
 
   AnimationController animationController;
@@ -258,6 +261,23 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                     itemBuilder: (context, position) {
 
                       return GestureDetector(
+                        onTap: () {
+                          if(position==0){
+                            Navigator.push(
+                                context, new MaterialPageRoute(builder: (context) => FormPage(id: widget.userId,)));
+
+                          }
+                          else if(position==1){
+
+                            Navigator.push(
+                                context, new MaterialPageRoute(builder: (context) => ChatScreen(name: name,)));
+                          }
+                          else {
+                            Navigator.push(
+                                context, new MaterialPageRoute(builder: (context) => Medicalhistory(id: widget.userId,)));
+                          }
+
+                        },
                         child: Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: Card(

@@ -2,13 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:zebo/pages/simplechart.dart';
 import 'package:charts_flutter/flutter.dart' as charts;
 
-
-
 class Chart extends StatefulWidget {
-  Chart({Key key, this.title,this.data}) : super(key: key);
+  Chart({Key key, this.title, this.data}) : super(key: key);
 
   final String title;
-   var data;
+  var data;
 
   @override
   _ChartState createState() => _ChartState();
@@ -16,20 +14,13 @@ class Chart extends StatefulWidget {
 
 class _ChartState extends State<Chart> {
   var data;
- static double var1,var2,var3,var4,var5,var6,var7,var0;
+  static double var1, var2, var3, var4, var5, var6, var7, var0;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-
-
-
-
   }
-
-
-
 
   /// Create one series with pass in data.
   List<charts.Series<QuarterSales, String>> mapChartData(
@@ -47,7 +38,7 @@ class _ChartState extends State<Chart> {
 
   @override
   Widget build(BuildContext context) {
-    data= widget.data;
+    data = widget.data;
     var0 = data['var0'].toDouble();
     var1 = data['var1'].toDouble();
     var2 = data['var2'].toDouble();
@@ -65,7 +56,6 @@ class _ChartState extends State<Chart> {
       QuarterSales('var5', var5),
       QuarterSales('var6', var6),
       QuarterSales('var7', var7),
-
     ];
 
     return Scaffold(

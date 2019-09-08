@@ -3,7 +3,6 @@ import 'package:zebo/services/authentication.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-
 import 'package:zebo/pages/adddetails_page.dart';
 //import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
 
@@ -12,17 +11,14 @@ import 'package:firebase_auth/firebase_auth.dart';
 class LoginSignUpPage extends StatefulWidget {
   LoginSignUpPage({this.auth, this.onSignedIn});
 
-
   final BaseAuth auth;
   final VoidCallback onSignedIn;
-
-
 
   @override
   State<StatefulWidget> createState() => new _LoginSignUpPageState();
 }
 
-enum FormMode { LOGIN, SIGNUP,FORGOT }
+enum FormMode { LOGIN, SIGNUP, FORGOT }
 
 class _LoginSignUpPageState extends State<LoginSignUpPage> {
   final _formKey = new GlobalKey<FormState>();
@@ -30,7 +26,7 @@ class _LoginSignUpPageState extends State<LoginSignUpPage> {
   final TextEditingController _filteraddress = new TextEditingController();
   final TextEditingController _filterphone = new TextEditingController();
   final TextEditingController _filtername = new TextEditingController();
-  String forgotemail='';
+  String forgotemail = '';
   FirebaseAuth _firebaseAuth;
   String name;
 
@@ -38,14 +34,12 @@ class _LoginSignUpPageState extends State<LoginSignUpPage> {
   String _password;
   String _errorMessage;
   String _errorforgotaccount;
-  String address='';
-  String phone='';
-  bool checkdoc=false;
+  String address = '';
+  String phone = '';
+  bool checkdoc = false;
   FirebaseUser guser;
   String _errorMessageStep2;
   String terms;
-
-
 
   // Initial form is login form
   FormMode _formMode = FormMode.LOGIN;
@@ -54,38 +48,32 @@ class _LoginSignUpPageState extends State<LoginSignUpPage> {
   bool _terms;
 
   _LoginSignUpPageState() {
-    _filtername.addListener((){
-      if(_filtername.text.isEmpty){
+    _filtername.addListener(() {
+      if (_filtername.text.isEmpty) {
         setState(() {
-          name ="";
+          name = "";
         });
+      } else {
+        name = _filtername.text;
       }
-      else {
-        name=_filtername.text;
-      }
-
     });
-    _filterphone.addListener((){
-      if(_filterphone.text.isEmpty){
+    _filterphone.addListener(() {
+      if (_filterphone.text.isEmpty) {
         setState(() {
-          phone ="";
+          phone = "";
         });
+      } else {
+        phone = _filterphone.text;
       }
-      else {
-        phone=_filterphone.text;
-      }
-
     });
-    _filteraddress.addListener((){
-      if(_filteraddress.text.isEmpty){
+    _filteraddress.addListener(() {
+      if (_filteraddress.text.isEmpty) {
         setState(() {
-          address ="";
+          address = "";
         });
+      } else {
+        address = _filteraddress.text;
       }
-      else {
-          address=_filteraddress.text;
-        }
-
     });
     _filter.addListener(() {
       if (_filter.text.isEmpty) {
@@ -111,7 +99,6 @@ class _LoginSignUpPageState extends State<LoginSignUpPage> {
     return false;
   }
 
-
   // Perform login or signup
   void _validateAndSubmit() async {
     setState(() {
@@ -124,43 +111,44 @@ class _LoginSignUpPageState extends State<LoginSignUpPage> {
       try {
         if (_formMode == FormMode.LOGIN) {
           userId = await widget.auth.signIn(_email, _password);
-         // userId = await widget.auth.testSignInWithPhoneNumber(_password);
+          // userId = await widget.auth.testSignInWithPhoneNumber(_password);
           //print('Signed in: $userId');
-        }
-
-        else {
-
+        } else {
           guser = await widget.auth.signUp(_email, _password);
-         // guser = await widget.auth.sendCodeToPhoneNumber(_email);
+          // guser = await widget.auth.sendCodeToPhoneNumber(_email);
           //FirebaseUser user = await _firebaseAuth.currentUser();
           //widget.auth.sendEmailVerification();
-         // _showVerifyEmailSentDialog();
+          // _showVerifyEmailSentDialog();
 
           await isuserdata_present(guser.uid);
-          if(checkdoc){
+          if (checkdoc) {
             this.widget.onSignedIn();
-          }
-          else{
+          } else {
             //ShowaddAddressdailog();
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => Adddetails(auth: widget.auth,onSignedIn: widget.onSignedIn,first: false,)),
+              MaterialPageRoute(
+                  builder: (context) => Adddetails(
+                        auth: widget.auth,
+                        onSignedIn: widget.onSignedIn,
+                        first: false,
+                      )),
             );
           }
 
-
-         // print('Signed up user: $userId');*/
+          // print('Signed up user: $userId');*/
 
         }
         setState(() {
           _isLoading = false;
         });
 
-        if (userId != null && userId.length > 0 && _formMode == FormMode.LOGIN) {
+        if (userId != null &&
+            userId.length > 0 &&
+            _formMode == FormMode.LOGIN) {
           //getuserdata(userId);
           widget.onSignedIn();
         }
-
       } catch (e) {
         print('Error: $e');
         setState(() {
@@ -174,10 +162,9 @@ class _LoginSignUpPageState extends State<LoginSignUpPage> {
     }
   }
 
-
   @override
   void initState() {
-    terms ="";
+    terms = "";
     _errorMessage = "";
     _isLoading = false;
     _terms = false;
@@ -185,7 +172,6 @@ class _LoginSignUpPageState extends State<LoginSignUpPage> {
 
     super.initState();
   }
-
 
   void _changeFormToSignUp() {
     _formKey.currentState.reset();
@@ -203,7 +189,7 @@ class _LoginSignUpPageState extends State<LoginSignUpPage> {
     });
   }
 
-  Widget adddetails(){
+  Widget adddetails() {
     return new SingleChildScrollView(
       child: new ListBody(
         children: <Widget>[
@@ -214,22 +200,16 @@ class _LoginSignUpPageState extends State<LoginSignUpPage> {
             decoration: InputDecoration(
               prefixIcon: new Icon(Icons.person_pin),
               hintText: "Enter your Name",
-
-
-
             ),
           ),
           new TextField(
             controller: _filteraddress,
-        scrollPadding: const EdgeInsets.all(20.0),
-        decoration: InputDecoration(
-          prefixIcon: new Icon(Icons.location_city),
-          hintText: " Enter your full address",
-
-
+            scrollPadding: const EdgeInsets.all(20.0),
+            decoration: InputDecoration(
+              prefixIcon: new Icon(Icons.location_city),
+              hintText: " Enter your full address",
+            ),
           ),
-          ),
-
           new TextField(
             controller: _filterphone,
             keyboardType: TextInputType.phone,
@@ -238,27 +218,21 @@ class _LoginSignUpPageState extends State<LoginSignUpPage> {
               prefixIcon: new Icon(Icons.phone),
               hintText: "Enter your phone no",
               prefix: new Text("+91"),
-
-
             ),
           ),
           Divider(),
-
           new Row(
             children: <Widget>[
-
-              new Checkbox(value: _terms, onChanged: (bool value){
-                  setState(() {
-                    _terms = value;
-                    Navigator.of(context).pop(context);
-                    ShowaddAddressdailog();
-                  });
-
-
-
-
-              }),
-           /*
+              new Checkbox(
+                  value: _terms,
+                  onChanged: (bool value) {
+                    setState(() {
+                      _terms = value;
+                      Navigator.of(context).pop(context);
+                      ShowaddAddressdailog();
+                    });
+                  }),
+              /*
               new FlatButton(onPressed: (){
 
                 Navigator.push(
@@ -269,145 +243,116 @@ class _LoginSignUpPageState extends State<LoginSignUpPage> {
             ],
           ),
           _showErrorMessageStep2(),
-
         ],
       ),
     );
   }
 
-  Future<bool> isuserdata_present(String uid) async{
-    bool check =false;
+  Future<bool> isuserdata_present(String uid) async {
+    bool check = false;
 
-    DocumentReference myref= Firestore.instance.collection("users").document(uid);
-   await myref.get().then((Doc){
-     checkdoc = check = Doc.exists;
-     print("check:"+check.toString());
-     return check;
-     });
-
-
-
-
-   }
-
-   void adduserdata(FirebaseUser user) async {
-     setState(() {
-       _isLoading = true;
-     });
-    Firestore.instance.collection("users").document(user.uid)
-    .setData({
-      'Email' : user.email,
-      'Name' : user.displayName!=null?user.displayName:name,
-      'address' :address,
-      'phone': phone,
-      'passwd': _password != null? _password : "passwd"
+    DocumentReference myref =
+        Firestore.instance.collection("users").document(uid);
+    await myref.get().then((Doc) {
+      checkdoc = check = Doc.exists;
+      print("check:" + check.toString());
+      return check;
     });
-    setState(() {
-      _isLoading=false;
-      widget.onSignedIn();
-    });
-   }
-
-
-
-  void ShowaddAddressdailog(){
-    showDialog(context: context,
-    barrierDismissible: false,
-    builder: (BuildContext context){
-      return AlertDialog(
-        title: new Text("Step 2"),
-
-        content: adddetails(),
-        actions: <Widget>[
-          new FlatButton(
-              onPressed: () {
-                print(phone.length);
-                print(address.length);
-                if(_terms && address!=null&&phone!=null&&address.length>5&&phone.length==10&&name!=null&&name.length>3){
-                  setState(() {
-                    _isLoading=true;
-                  });
-                  Navigator.of(context).pop();
-
-                  adduserdata(guser);
-                }
-                else{
-                   if(name==null||name.length<3){
-                     setState(() {
-                       Navigator.of(context).pop(context);
-                       _errorMessageStep2="Invalid Name";
-                       ShowaddAddressdailog();
-                     });
-                   }
-
-                    else if(address==null||address.length<5){
-                      setState(() {
-                        Navigator.of(context).pop(context);
-                        _errorMessageStep2 = "Invalid Address";
-                        ShowaddAddressdailog();
-
-                      });
-
-                    }
-                    else if(phone==null||phone.length<10){
-                      setState(() {
-                        Navigator.of(context).pop(context);
-                        _errorMessageStep2 = "Invalid Phone";
-                        ShowaddAddressdailog();
-                      });
-
-                    }
-                   else  if(!_terms){
-                      setState(() {
-                        Navigator.of(context).pop(context);
-                        _errorMessageStep2 = "Must aggree Terms And Conditions";
-                        ShowaddAddressdailog();
-                      });
-                    }
-
-
-
-
-
-
-                }
-
-
-              },
-              child: new Text("Submit"))
-        ],
-      );
-    }
-    );
   }
 
-  void showforgotpassdailog(){
-    showDialog(context: context,
+  void adduserdata(FirebaseUser user) async {
+    setState(() {
+      _isLoading = true;
+    });
+    Firestore.instance.collection("users").document(user.uid).setData({
+      'Email': user.email,
+      'Name': user.displayName != null ? user.displayName : name,
+      'address': address,
+      'phone': phone,
+      'passwd': _password != null ? _password : "passwd"
+    });
+    setState(() {
+      _isLoading = false;
+      widget.onSignedIn();
+    });
+  }
+
+  void ShowaddAddressdailog() {
+    showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: new Text("Step 2"),
+            content: adddetails(),
+            actions: <Widget>[
+              new FlatButton(
+                  onPressed: () {
+                    print(phone.length);
+                    print(address.length);
+                    if (_terms &&
+                        address != null &&
+                        phone != null &&
+                        address.length > 5 &&
+                        phone.length == 10 &&
+                        name != null &&
+                        name.length > 3) {
+                      setState(() {
+                        _isLoading = true;
+                      });
+                      Navigator.of(context).pop();
+
+                      adduserdata(guser);
+                    } else {
+                      if (name == null || name.length < 3) {
+                        setState(() {
+                          Navigator.of(context).pop(context);
+                          _errorMessageStep2 = "Invalid Name";
+                          ShowaddAddressdailog();
+                        });
+                      } else if (address == null || address.length < 5) {
+                        setState(() {
+                          Navigator.of(context).pop(context);
+                          _errorMessageStep2 = "Invalid Address";
+                          ShowaddAddressdailog();
+                        });
+                      } else if (phone == null || phone.length < 10) {
+                        setState(() {
+                          Navigator.of(context).pop(context);
+                          _errorMessageStep2 = "Invalid Phone";
+                          ShowaddAddressdailog();
+                        });
+                      } else if (!_terms) {
+                        setState(() {
+                          Navigator.of(context).pop(context);
+                          _errorMessageStep2 =
+                              "Must aggree Terms And Conditions";
+                          ShowaddAddressdailog();
+                        });
+                      }
+                    }
+                  },
+                  child: new Text("Submit"))
+            ],
+          );
+        });
+  }
+
+  void showforgotpassdailog() {
+    showDialog(
+        context: context,
         builder: (BuildContext context) {
           return AlertDialog(
             title: new Text("Enter your account Email"),
-
             content: textforgotpass(),
-
             actions: <Widget>[
-
-
               new FlatButton(
                 child: new Text(" Send Reset link"),
-                onPressed: ()  {
-
-
+                onPressed: () {
                   responsecheck(forgotemail);
                   setState(() {
-                    _isLoading =true;
+                    _isLoading = true;
                   });
-
-
-
-
-
-
-
                 },
               ),
               new FlatButton(
@@ -415,152 +360,121 @@ class _LoginSignUpPageState extends State<LoginSignUpPage> {
                 onPressed: () {
                   _filter.clear();
                   setState(() {
-
-                    _errorforgotaccount="";
-                    _isLoading =false;
+                    _errorforgotaccount = "";
+                    _isLoading = false;
                   });
                   Navigator.of(context).pop();
-
-
                 },
               ),
             ],
           );
-        }
-
-    );
+        });
   }
 
-  Widget showcupertinodialog(){
-    showDialog(context: context,
-    builder: (BuildContext context) {
-      return new CupertinoAlertDialog(
-        title: new Text("Password Reset"),
-        content: new Text("Link to reset your account password has been sent to your email"),
-        actions: <Widget>[new CupertinoDialogAction(child: CupertinoButton(child: Text("dismiss"), onPressed:
-            (){
-          Navigator.of(context).pop();
-        }))],
-
-      );
-    });
-
+  Widget showcupertinodialog() {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return new CupertinoAlertDialog(
+            title: new Text("Password Reset"),
+            content: new Text(
+                "Link to reset your account password has been sent to your email"),
+            actions: <Widget>[
+              new CupertinoDialogAction(
+                  child: CupertinoButton(
+                      child: Text("dismiss"),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      }))
+            ],
+          );
+        });
   }
 
-  Widget textforgotpass(){
+  Widget textforgotpass() {
     return new SingleChildScrollView(
       child: new ListBody(
-
         children: <Widget>[
           new TextField(
-            onChanged: (value){
-              if(!emailvalid(value)){
+            onChanged: (value) {
+              if (!emailvalid(value)) {
                 print("into invalid");
                 setState(() {
-                  _errorforgotaccount="invalid email";
+                  _errorforgotaccount = "invalid email";
                 });
-              }
-              else{
-
+              } else {
                 print(value);
               }
             },
             controller: _filter,
-
-
-
             keyboardType: TextInputType.emailAddress,
-
             scrollPadding: const EdgeInsets.all(20.0),
             decoration: InputDecoration(
               prefixIcon: new Icon(Icons.email),
               hintText: "Example@mail.com",
             ),
           ),
-
           _showErrorMessagefor(),
         ],
       ),
     );
-
   }
-  
-  void responsecheck(String email){
+
+  void responsecheck(String email) {
     setState(() {
       _errorMessage = "";
     });
-    if(email.isEmpty){
+    if (email.isEmpty) {
       setState(() {
         _errorforgotaccount = "Email Cannot be Empty";
-        _isLoading=false;
+        _isLoading = false;
         Navigator.of(context).pop(context);
         showforgotpassdailog();
       });
     }
-    if(!emailvalid(email)){
+    if (!emailvalid(email)) {
       setState(() {
-
         _errorforgotaccount = "Invalid Email";
-        _isLoading=false;
+        _isLoading = false;
         Navigator.of(context).pop(context);
         showforgotpassdailog();
       });
-    }
-    else{
+    } else {
       responseforgot(email);
     }
-    
-    
   }
 
-  void responseforgot(String forgotemail) async{
+  void responseforgot(String forgotemail) async {
+    try {
+      String resptext = '';
+      await widget.auth.Forgotpassword(forgotemail);
 
-       try {
-         String resptext = '';
-         await widget.auth.Forgotpassword(forgotemail);
+      _filter.clear();
+      Navigator.of(context).pop();
+      if (_isIos) {
+        showcupertinodialog();
+      } else {
+        _resetEmailSentDialog();
+      }
 
-         _filter.clear();
-         Navigator.of(context).pop();
-         if(_isIos){
-           showcupertinodialog();
-         }
-         else{
-           _resetEmailSentDialog();
-         }
+      //
+      setState(() {
+        _isLoading = false;
+        _errorforgotaccount = null;
+      });
+    } catch (e) {
+      print(e.toString());
 
-         //
-         setState(() {
-           _isLoading=false;
-           _errorforgotaccount = null;});
+      setState(() {
+        _isLoading = false;
+        _errorforgotaccount = "No account for this email found ";
+      });
 
-       }
-       catch(e){
-
-           print(e.toString());
-
-           setState(() {
-             _isLoading=false;
-             _errorforgotaccount = "No account for this email found ";
-           });
-
-           Navigator.of(context).pop(context);
-           showforgotpassdailog();
-
-
-
-
-       }
-
-
-
-
- 
-
-
-
-
-
+      Navigator.of(context).pop(context);
+      showforgotpassdailog();
+    }
   }
+
   void _resetEmailSentDialog() {
     showDialog(
       context: context,
@@ -588,7 +502,6 @@ class _LoginSignUpPageState extends State<LoginSignUpPage> {
     _isIos = Theme.of(context).platform == TargetPlatform.iOS;
     return new Scaffold(
         appBar: null,
-
         body: Stack(
           children: <Widget>[
             _showBody(),
@@ -597,20 +510,21 @@ class _LoginSignUpPageState extends State<LoginSignUpPage> {
         ));
   }
 
-  Widget _showCircularProgress(){
+  Widget _showCircularProgress() {
     if (_isLoading) {
       return Center(child: CircularProgressIndicator());
-    } return Container(height: 0.0, width: 0.0,);
-
+    }
+    return Container(
+      height: 0.0,
+      width: 0.0,
+    );
   }
-  bool emailvalid(String email){
+
+  bool emailvalid(String email) {
     bool isvalid = false;
-   isvalid = RegExp(r"^[a-zA-Z0-9.]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
-        .hasMatch(email);
+    isvalid = RegExp(r"^[a-zA-Z0-9.]+@[a-zA-Z0-9]+\.[a-zA-Z]+").hasMatch(email);
     return isvalid;
-
   }
-
 
   void _showVerifyEmailSentDialog() {
     showDialog(
@@ -619,7 +533,8 @@ class _LoginSignUpPageState extends State<LoginSignUpPage> {
         // return object of type Dialog
         return AlertDialog(
           title: new Text("Verify your account"),
-          content: new Text("Link to verify account has been sent to your email"),
+          content:
+              new Text("Link to verify account has been sent to your email"),
           actions: <Widget>[
             new FlatButton(
               child: new Text("Dismiss"),
@@ -634,7 +549,7 @@ class _LoginSignUpPageState extends State<LoginSignUpPage> {
     );
   }
 
-  Widget _showBody(){
+  Widget _showBody() {
     return new Container(
         padding: EdgeInsets.all(16.0),
         child: new Form(
@@ -649,13 +564,14 @@ class _LoginSignUpPageState extends State<LoginSignUpPage> {
               _showPrimaryButton(),
               _showSecondaryButton(),
               _showErrorMessage(),
-
-
-              new Padding(padding: const EdgeInsets.fromLTRB(0.0, 0.0, 5.0, 10.0),
-                child: Text("Or",textAlign: TextAlign.center,style: TextStyle(fontSize: 20), ),
-
+              new Padding(
+                padding: const EdgeInsets.fromLTRB(0.0, 0.0, 5.0, 10.0),
+                child: Text(
+                  "Or",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: 20),
+                ),
               ),
-
               googlebtn(),
             ],
           ),
@@ -696,7 +612,6 @@ class _LoginSignUpPageState extends State<LoginSignUpPage> {
     }
   }
 
-
   Widget _showErrorMessage() {
     if (_errorMessage != null && _errorMessage.length > 0) {
       return new Text(
@@ -716,30 +631,40 @@ class _LoginSignUpPageState extends State<LoginSignUpPage> {
 
   Widget _showLogo() {
     return new Hero(
-      tag: 'hero',
-      child: Center(child: Column(children: <Widget>[new Center(child:
+        tag: 'hero',
+        child: Center(
+          child: Column(
+            children: <Widget>[
+              new Center(
+                  child:
 
-     /* Image.network(
+                      /* Image.network(
         'assets/flutter_logo.png',
         height: 200.0,
       )*/
-     new FlutterLogo(
-       size: 200.0,
-     )
-
-      ),
-        new Center(
-          child: new Row(mainAxisSize: MainAxisSize.min,children: <Widget>[
-          new Text("Zebo",textAlign:TextAlign.center,
-            style: new TextStyle(fontSize: 45, color: Colors.cyan),),
-          new Text(".AI",textAlign:TextAlign.center,
-            style: new TextStyle(fontSize: 45, color: Colors.black54),)
-
-
-        ],)
-          ,)
-       ],),)
-    );
+                      new FlutterLogo(
+                size: 200.0,
+              )),
+              new Center(
+                child: new Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    new Text(
+                      "Zebo",
+                      textAlign: TextAlign.center,
+                      style: new TextStyle(fontSize: 45, color: Colors.cyan),
+                    ),
+                    new Text(
+                      ".AI",
+                      textAlign: TextAlign.center,
+                      style: new TextStyle(fontSize: 45, color: Colors.black54),
+                    )
+                  ],
+                ),
+              )
+            ],
+          ),
+        ));
   }
 
   Widget _showEmailInput() {
@@ -761,8 +686,7 @@ class _LoginSignUpPageState extends State<LoginSignUpPage> {
               _isLoading = false;
             });
             return 'Email can\'t be empty';
-          }
-          else if(!emailvalid(value)){
+          } else if (!emailvalid(value)) {
             setState(() {
               _isLoading = false;
             });
@@ -804,10 +728,10 @@ class _LoginSignUpPageState extends State<LoginSignUpPage> {
     return new FlatButton(
       child: _formMode == FormMode.LOGIN
           ? new Text('Dont have an account? Create an account',
-          style: new TextStyle(fontSize: 18.0, fontWeight: FontWeight.w300))
+              style: new TextStyle(fontSize: 18.0, fontWeight: FontWeight.w300))
           : new Text('Have an account? Sign in',
-          style:
-          new TextStyle(fontSize: 18.0, fontWeight: FontWeight.w300)),
+              style:
+                  new TextStyle(fontSize: 18.0, fontWeight: FontWeight.w300)),
       onPressed: _formMode == FormMode.LOGIN
           ? _changeFormToSignUp
           : _changeFormToLogin,
@@ -821,79 +745,77 @@ class _LoginSignUpPageState extends State<LoginSignUpPage> {
           height: 40.0,
           child: new RaisedButton(
             elevation: 5.0,
-            shape: new RoundedRectangleBorder(borderRadius: new BorderRadius.circular(30.0)),
+            shape: new RoundedRectangleBorder(
+                borderRadius: new BorderRadius.circular(30.0)),
             color: Colors.cyan,
             child: _formMode == FormMode.LOGIN
                 ? new Text('Login',
-                style: new TextStyle(fontSize: 20.0, color: Colors.white))
+                    style: new TextStyle(fontSize: 20.0, color: Colors.white))
                 : new Text('Create account',
-                style: new TextStyle(fontSize: 20.0, color: Colors.white)),
+                    style: new TextStyle(fontSize: 20.0, color: Colors.white)),
             onPressed: _validateAndSubmit,
           ),
         ));
   }
 
-  Widget _forgotpass(){
-    return new
-    FlatButton(materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,onPressed:(){
-     showforgotpassdailog();
-      //this.getemail();
-
-    }, child:
-    Text("Forgot Password?",
-      style: new TextStyle(height: 2.0,
-        fontSize: 18,
-        fontWeight: FontWeight.w300,
+  Widget _forgotpass() {
+    return new FlatButton(
+      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+      onPressed: () {
+        showforgotpassdailog();
+        //this.getemail();
+      },
+      child: Text(
+        "Forgot Password?",
+        style: new TextStyle(
+          height: 2.0,
+          fontSize: 18,
+          fontWeight: FontWeight.w300,
+        ),
+        textAlign: TextAlign.center,
       ),
-      textAlign: TextAlign.center,
-
-    ),
     );
-
   }
 
-  Widget googlebtn(){
+  Widget googlebtn() {
     return new RaisedButton(
       splashColor: Colors.cyan,
-      shape: new RoundedRectangleBorder(borderRadius: new BorderRadius.circular(30.0)),
+      shape: new RoundedRectangleBorder(
+          borderRadius: new BorderRadius.circular(30.0)),
       onPressed: () async {
-
-
-        try{
+        try {
           setState(() {
-            _isLoading=true;
+            _isLoading = true;
           });
-          FirebaseUser  userid;
-          bool a=false;
+          FirebaseUser userid;
+          bool a = false;
 
           userid = await widget.auth.Gsignin();
           guser = userid;
-          if(userid.uid!=null && userid.uid.length>0 &&  (_formMode == FormMode.LOGIN || _formMode == FormMode.SIGNUP)){
-
+          if (userid.uid != null &&
+              userid.uid.length > 0 &&
+              (_formMode == FormMode.LOGIN || _formMode == FormMode.SIGNUP)) {
             await isuserdata_present(userid.uid);
-              if(checkdoc){
-                this.widget.onSignedIn();
-              }
-              else{
-                //ShowaddAddressdailog();
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => Adddetails(auth: widget.auth,onSignedIn: widget.onSignedIn,first: false,)),
-                );
-              }
-
-
-
+            if (checkdoc) {
+              this.widget.onSignedIn();
+            } else {
+              //ShowaddAddressdailog();
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => Adddetails(
+                          auth: widget.auth,
+                          onSignedIn: widget.onSignedIn,
+                          first: false,
+                        )),
+              );
+            }
 
             setState(() {
-
-              _isLoading=false;
+              _isLoading = false;
             });
-
           }
-
-        }
-        catch(e){
+        } catch (e) {
           setState(() {
             _isLoading = false;
             if (_isIos) {
@@ -902,12 +824,7 @@ class _LoginSignUpPageState extends State<LoginSignUpPage> {
               _errorMessage = "you have to select an account to login";
           });
         }
-
-
-
-
-
-        },
+      },
       elevation: 5.0,
       padding: EdgeInsets.only(top: 3.0, bottom: 3.0, left: 3.0),
       color: const Color(0xFFFFFFFF),
@@ -922,17 +839,14 @@ class _LoginSignUpPageState extends State<LoginSignUpPage> {
               padding: EdgeInsets.only(left: 10.0, right: 10.0),
               child: new Text(
                 "Sign in with Google",
-                style: TextStyle(
-                    color: Colors.grey,
-                    fontWeight: FontWeight.bold),
-              )
-          ),
+                style:
+                    TextStyle(color: Colors.grey, fontWeight: FontWeight.bold),
+              )),
         ],
       ),
     );
   }
 }
-
 
 /*
 

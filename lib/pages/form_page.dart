@@ -5,12 +5,10 @@ import "package:zebo/pages/upload.dart";
 class FormPage extends StatefulWidget {
   FormPage({this.id});
 
-   String id;
+  String id;
 
   @override
   _FormPageState createState() => _FormPageState();
-
-
 }
 
 class _FormPageState extends State<FormPage> {
@@ -143,7 +141,7 @@ class _FormPageState extends State<FormPage> {
                   groupValue: genderValue,
                   onChanged: (value) {
                     setState(
-                          () {
+                      () {
                         genderValue = value;
                       },
                     );
@@ -157,7 +155,7 @@ class _FormPageState extends State<FormPage> {
                   groupValue: genderValue,
                   onChanged: (value) {
                     setState(
-                          () {
+                      () {
                         genderValue = value;
                       },
                     );
@@ -185,7 +183,7 @@ class _FormPageState extends State<FormPage> {
                   groupValue: presentSinceBirth,
                   onChanged: (value) {
                     setState(
-                          () {
+                      () {
                         presentSinceBirth = value;
                       },
                     );
@@ -199,7 +197,7 @@ class _FormPageState extends State<FormPage> {
                   groupValue: presentSinceBirth,
                   onChanged: (value) {
                     setState(
-                          () {
+                      () {
                         presentSinceBirth = value;
                       },
                     );
@@ -277,7 +275,7 @@ class _FormPageState extends State<FormPage> {
           value: boolValue,
           onChanged: (bool value) {
             setState(
-                  () {
+              () {
                 switch (title) {
                   case 'Itching':
                     itchingValue = value;
@@ -371,8 +369,8 @@ class _FormPageState extends State<FormPage> {
   }
 
   String validateName(
-      String value,
-      ) {
+    String value,
+  ) {
     if (value.isEmpty) {
       return 'Enter Name';
     }
@@ -381,8 +379,8 @@ class _FormPageState extends State<FormPage> {
   }
 
   String validateAge(
-      String value,
-      ) {
+    String value,
+  ) {
     if (value.isEmpty) {
       return 'Enter Age';
     }
@@ -398,7 +396,17 @@ class _FormPageState extends State<FormPage> {
     if (!state.validate()) {
       return;
     }
-    if (!itchingValue && !photosensitivityValue && !menstrualValue && !menstrualValue && !feverValue && !jointValue && !darkingValue && !blisteringValue && !oralValue && !diseaseValue && !noneValue) {
+    if (!itchingValue &&
+        !photosensitivityValue &&
+        !menstrualValue &&
+        !menstrualValue &&
+        !feverValue &&
+        !jointValue &&
+        !darkingValue &&
+        !blisteringValue &&
+        !oralValue &&
+        !diseaseValue &&
+        !noneValue) {
       showInSnackBar(context, 'Form cannot be empty');
       return;
     }
@@ -407,59 +415,72 @@ class _FormPageState extends State<FormPage> {
       return;
     }
     if (presentSinceBirth == 'Yes') {
-      showInSnackBar(context, 'It is unlikely to be acne if it is present since birth');
+      showInSnackBar(
+          context, 'It is unlikely to be acne if it is present since birth');
       return;
     }
     if (age < 10) {
-      showInSnackBar(context, 'it is unlikely to be acne if patient\'s age is below 10 years');
+      showInSnackBar(context,
+          'it is unlikely to be acne if patient\'s age is below 10 years');
       return;
     }
-    if (itchingValue || photosensitivityValue || menstrualValue || menstrualValue || feverValue || jointValue || darkingValue || blisteringValue || oralValue || diseaseValue) {
-      showInSnackBar(context, 'This seems severe, its advised to see a dermatologist!');
+    if (itchingValue ||
+        photosensitivityValue ||
+        menstrualValue ||
+        menstrualValue ||
+        feverValue ||
+        jointValue ||
+        darkingValue ||
+        blisteringValue ||
+        oralValue ||
+        diseaseValue) {
+      showInSnackBar(
+          context, 'This seems severe, its advised to see a dermatologist!');
       return;
     }
     if (otherValue) {
       showInSnackBar(context, 'Unlikely to be acne');
       return;
     }
-    if(noneValue&&faceValue||chestValue||backValue){
+    if (noneValue && faceValue || chestValue || backValue) {
       state.save();
       showInSnackBar(context, 'Loading..!');
       adduserdata();
-      Navigator.push(context, new MaterialPageRoute(builder: (context)=> UserOptions(id: widget.id,)));
-
+      Navigator.push(
+          context,
+          new MaterialPageRoute(
+              builder: (context) => UserOptions(
+                    id: widget.id,
+                  )));
     }
-
 
     // TODO Push to db and check validate functions
   }
 
   void adduserdata() async {
-    await Firestore.instance.collection("acneanalysis").document()
-        .setData({
-      "uid":widget.id,
-      "Name":name,
-      "Age":age,
-      "gender":genderValue,
-      "PSB":presentSinceBirth,
-      "Noneselected":noneValue,
-      "face":faceValue,
-      "chest":chestValue,
-      "back":backValue,
-
-
+    await Firestore.instance.collection("acneanalysis").document().setData({
+      "uid": widget.id,
+      "Name": name,
+      "Age": age,
+      "gender": genderValue,
+      "PSB": presentSinceBirth,
+      "Noneselected": noneValue,
+      "face": faceValue,
+      "chest": chestValue,
+      "back": backValue,
     });
-
-
   }
 
   void showInSnackBar(BuildContext context, String message) {
     _scaffoldKey.currentState.showSnackBar(
       SnackBar(
         backgroundColor: Colors.redAccent,
-        content:new Container(
+        content: new Container(
           height: 30.0,
-          child: Text(message, style: TextStyle(fontSize: 20.0),),
+          child: Text(
+            message,
+            style: TextStyle(fontSize: 20.0),
+          ),
         ),
       ),
     );

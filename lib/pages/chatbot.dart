@@ -3,6 +3,9 @@ import 'package:zebo/pages/chatmsg.dart';
 
 class ChatScreen extends StatefulWidget {
   ChatScreen({this.name});
+
+
+
   @override
   State createState() => new ChatScreenState();
 
@@ -12,6 +15,7 @@ class ChatScreen extends StatefulWidget {
 class ChatScreenState extends State<ChatScreen> {
   final TextEditingController textEditingController = new TextEditingController();
   final List<ChatMessage> _messages= <ChatMessage>[];
+
 
 
   void _handleSubmit(String text) {

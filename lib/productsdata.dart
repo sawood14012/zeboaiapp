@@ -8,7 +8,8 @@ class productsdata {
   String _description;
   String _shortdesc;
 
-  productsdata(this._id,this._title,this._image,this._price,this._description,this._shortdesc);
+  productsdata(this._id, this._title, this._image, this._price,
+      this._description, this._shortdesc);
 
   String get description => _description;
 
@@ -22,15 +23,12 @@ class productsdata {
 
   String get shortdesc => _shortdesc;
 
-  productsdata.fromSnapshot(DataSnapshot snapshot){
+  productsdata.fromSnapshot(DataSnapshot snapshot) {
     _id = snapshot.key;
     _title = snapshot.value['title'];
     _image = snapshot.value['image'];
     _price = snapshot.value['price'];
-    _description= snapshot.value['description'];
+    _description = snapshot.value['description'];
     _shortdesc = snapshot.value['shortdesc'];
-
   }
-
-
 }
