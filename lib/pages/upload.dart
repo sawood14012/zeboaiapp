@@ -236,7 +236,8 @@ class UserOptionsState extends State<UserOptions> {
     "var4":data['var4'].toString(),
     "var5":data['var5'].toString(),
     "var6":data['var6'].toString(),
-    "var7":data['var7'].toString()};
+    "var7":data['var7'].toString(),
+    "img":_uploadedfileurl};
 
 
 
