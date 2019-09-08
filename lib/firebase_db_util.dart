@@ -27,6 +27,7 @@ class FirebaseDatabaseUtil {
     // Demonstrates configuring the database directly
 
     _userRef = database.reference().child('medicalhistory');
+    _userRef1 = database.reference().child("products");
     
    // database.reference().child('counter').once().then((DataSnapshot snapshot) {
      // print('Connected to second database and read ${snapshot.value}');
@@ -45,7 +46,7 @@ class FirebaseDatabaseUtil {
 
 
   DatabaseReference getUser() {
-    return _userRef;
+    return _userRef1;
   }
 
   DatabaseReference getUser1(uid) {
