@@ -1,9 +1,12 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_database/ui/firebase_animated_list.dart';
 import 'package:zebo/productsdata.dart';
 import 'package:zebo/firebase_db_util.dart';
 import 'package:zebo/medicaldata.dart';
+import 'package:zebo/pages/chart_page.dart';
 
 class Medicalhistory extends StatefulWidget {
   Medicalhistory({Key key, this.title, this.id}) : super(key: key);
@@ -157,7 +160,11 @@ class _MedicalhistoryState extends State<Medicalhistory> {
                 pdata.var6 +
                 " " +
                 pdata.var7),
-            onTap: () {},
+            onTap: () { var data = {"var0": int.parse(pdata.var0)  ,"var1": int.parse(pdata.var1) ,"var2": int.parse(pdata.var2) ,"var3": int.parse(pdata.var3) ,
+              "var4": int.parse(pdata.var4) ,"var5": int.parse(pdata.var5) ,
+              "var6": int.parse(pdata.var6) ,
+              "var7": int.parse(pdata.var7)};
+            Navigator.push(context, MaterialPageRoute(builder: (context)=>Chart(data: data,) ));},
           ),
         ],
       ),
