@@ -7,6 +7,7 @@ import 'package:zebo/pages/CardItemModel.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:zebo/pages/form_page.dart';
 import 'package:zebo/pages/medicalhistory.dart';
+import 'package:zebo/pages/products.dart';
 
 class MyHomePage extends StatefulWidget {
   MyHomePage({Key key, this.title, this.userId, this.auth, this.onSignedOut})
@@ -164,6 +165,18 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                     context,
                     MaterialPageRoute(
                         builder: (context) => Medicalhistory(id: widget.userId)));
+              },
+            ),
+            ListTile(
+              title: Text('Products'),
+              onTap: () {
+                // Update the state of the app.
+                // ...
+                Navigator.pop(context);
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) =>Products()));
               },
             ),
             ListTile(
