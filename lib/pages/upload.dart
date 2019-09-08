@@ -8,6 +8,7 @@ import 'package:path/path.dart';
 import 'package:dio/dio.dart';
 import 'package:zebo/firebase_db_util.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:zebo/pages/chart_page.dart';
 
 class UserOptions extends StatefulWidget {
   UserOptions({this.id});
@@ -15,6 +16,7 @@ class UserOptions extends StatefulWidget {
   State<StatefulWidget> createState() {
     return new UserOptionsState();
   }
+
   final String id;
 }
 
@@ -33,7 +35,6 @@ class UserOptionsState extends State<UserOptions> {
   void initState() {
     // TODO: implement initState
     super.initState();
-
   }
 
   @override
@@ -73,7 +74,6 @@ class UserOptionsState extends State<UserOptions> {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: <Widget>[
                   displaySelectedFile(galleryFile),
-
                   Row(
                     children: <Widget>[
                       Expanded(
@@ -120,7 +120,9 @@ class UserOptionsState extends State<UserOptions> {
           Material(
             color: Theme.of(context).primaryColor,
             child: InkWell(
-              onTap: () { uploadFile();},
+              onTap: () {
+                uploadFile(context);
+              },
               child: SafeArea(
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -145,17 +147,14 @@ class UserOptionsState extends State<UserOptions> {
               ),
             ),
           ),
-
         ],
       ),
     );
   }
 
-  void call() {
-    uploadFile();
+  void call(BuildContext context) {
+    uploadFile(context);
   }
-
-
 
   Widget displaySelectedFile(File file) {
     return Center(
@@ -173,7 +172,7 @@ class UserOptionsState extends State<UserOptions> {
     );
   }
 
-  Future uploadFile() async {
+  Future uploadFile(BuildContext context) async {
     if (galleryFile == null) {
       return;
     }
@@ -189,13 +188,12 @@ class UserOptionsState extends State<UserOptions> {
     storageReference.getDownloadURL().then((fileURL) {
       setState(() {
         _uploadedfileurl = fileURL;
-        sendtoapi();
+        sendtoapi(context);
       });
     });
   }
 
-
-  sendtoapi() async {
+  void sendtoapi(BuildContext context) async {
     print(_uploadedfileurl);
     try {
       Response response = await Dio().post(
@@ -214,6 +212,12 @@ class UserOptionsState extends State<UserOptions> {
         prog = false;
         msg = response.data;
       });
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => ChartPage(),
+        ),
+      );
     } on HttpException catch (error) {
       galleryFile = null;
       setState(
@@ -229,20 +233,24 @@ class UserOptionsState extends State<UserOptions> {
   void sendresult(data) async {
     FirebaseDatabase database = new FirebaseDatabase();
 
-    var data1= {"uid": widget.id,"var0":data['var0'].toString(),
-    "var1":data['var1'].toString(),
-    "var2":data['var2'].toString(),
-    "var3":data['var3'].toString(),
-    "var4":data['var4'].toString(),
-    "var5":data['var5'].toString(),
-    "var6":data['var6'].toString(),
-    "var7":data['var7'].toString(),
-    "img":_uploadedfileurl};
+    var data1 = {
+      "uid": widget.id,
+      "var0": data['var0'].toString(),
+      "var1": data['var1'].toString(),
+      "var2": data['var2'].toString(),
+      "var3": data['var3'].toString(),
+      "var4": data['var4'].toString(),
+      "var5": data['var5'].toString(),
+      "var6": data['var6'].toString(),
+      "var7": data['var7'].toString(),
+      "img": _uploadedfileurl
+    };
 
-
-
-    await FirebaseDatabase.instance.reference().child('medicalhistory').push().set(data1);
-
+    await FirebaseDatabase.instance
+        .reference()
+        .child('medicalhistory')
+        .push()
+        .set(data1);
   }
 
   Widget progressof() {
