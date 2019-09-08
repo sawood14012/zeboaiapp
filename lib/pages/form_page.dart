@@ -426,7 +426,7 @@ class _FormPageState extends State<FormPage> {
       state.save();
       showInSnackBar(context, 'Loading..!');
       adduserdata();
-      Navigator.push(context, new MaterialPageRoute(builder: (context)=> UserOptions()));
+      Navigator.push(context, new MaterialPageRoute(builder: (context)=> UserOptions(id: widget.id,)));
 
     }
 

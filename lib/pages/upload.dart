@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -5,12 +6,16 @@ import 'package:image_picker/image_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:path/path.dart';
 import 'package:dio/dio.dart';
+import 'package:zebo/firebase_db_util.dart';
+import 'package:firebase_database/firebase_database.dart';
 
 class UserOptions extends StatefulWidget {
+  UserOptions({this.id});
   @override
   State<StatefulWidget> createState() {
     return new UserOptionsState();
   }
+  final String id;
 }
 
 class UserOptionsState extends State<UserOptions> {
@@ -20,8 +25,16 @@ class UserOptionsState extends State<UserOptions> {
 
 //save the result of camera file
   File cameraFile;
-  bool prog=false;
-  String msg="";
+  bool prog = false;
+  String msg = "";
+  FirebaseDatabaseUtil databaseUtil;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -47,65 +60,129 @@ class UserOptionsState extends State<UserOptions> {
       setState(() {});
     }
 
-    return new Scaffold(
-      appBar: new AppBar(
-        title: new Text('Image Picker'),
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Image Picker'),
       ),
-      body: new Builder(
-        builder: (BuildContext context) {
-          return new Column(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: <Widget>[
-              new RaisedButton(
-                child: new Text('Select Image from Gallery'),
-                onPressed: imageSelectorGallery,
-              ),
-              new RaisedButton(
-                child: new Text('Select Image from Camera'),
-                onPressed: imageSelectorCamera,
-              ),
-              displaySelectedFile(galleryFile),
-              progressof(),
-              new RaisedButton(onPressed: uploadFile,child: Text("UPLOAD"),)
+      body: Column(
+        children: <Widget>[
+          Expanded(
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: <Widget>[
+                  displaySelectedFile(galleryFile),
 
-            ],
-          );
-        },
-      )
+                  Row(
+                    children: <Widget>[
+                      Expanded(
+                        child: Container(
+                          padding: EdgeInsets.all(16),
+                          child: ButtonTheme(
+                            child: RaisedButton(
+                              child: Container(
+                                padding: EdgeInsets.all(8),
+                                child: Text(
+                                  'Select Image from Gallery',
+                                  textAlign: TextAlign.center,
+                                ),
+                              ),
+                              onPressed: imageSelectorGallery,
+                            ),
+                          ),
+                        ),
+                      ),
+                      Expanded(
+                        child: Container(
+                          padding: EdgeInsets.all(16),
+                          child: ButtonTheme(
+                            child: RaisedButton(
+                              child: Container(
+                                padding: EdgeInsets.all(8),
+                                child: Text(
+                                  'Select Image from Camera',
+                                  textAlign: TextAlign.center,
+                                ),
+                              ),
+                              onPressed: imageSelectorCamera,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  )
+                ],
+              ),
+            ),
+          ),
+          progressof(),
+          Material(
+            color: Theme.of(context).primaryColor,
+            child: InkWell(
+              onTap: () { uploadFile();},
+              child: SafeArea(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    Expanded(
+                      child: Padding(
+                        padding: EdgeInsets.all(16),
+                        child: Text(
+                          'Upload',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.w700,
+                            fontSize: 16,
+                          ),
+                        ),
+                      ),
+                    )
+                  ],
+                ),
+              ),
+            ),
+          ),
+
+        ],
+      ),
     );
   }
 
-  void call(){
+  void call() {
     uploadFile();
   }
 
-  void _onItemTapped(int index) {
-    setState(() {
-      uploadFile();
-    });
-  }
+
+
   Widget displaySelectedFile(File file) {
-    return new SizedBox(
-      height: 200.0,
-      width: 300.0,
+    return Center(
+      child: new SizedBox(
+        height: 200.0,
+        width: 300.0,
 //child: new Card(child: new Text(''+galleryFile.toString())),
 //child: new Image.file(galleryFile),
-      child: file == null
-          ? new Text('Sorry nothing selected!!')
-          : new Image.file(file),
+        child: Center(
+          child: file == null
+              ? new Text('Sorry nothing selected!!')
+              : new Image.file(file),
+        ),
+      ),
     );
   }
 
   Future uploadFile() async {
-    if(galleryFile==null){
+    if (galleryFile == null) {
       return;
     }
     setState(() {
-      prog =true;
+      prog = true;
     });
     StorageReference storageReference = FirebaseStorage.instance
         .ref()
-        .child('analysisimg/'+basename(galleryFile.path));
+        .child('analysisimg/' + basename(galleryFile.path));
     StorageUploadTask uploadTask = storageReference.putFile(galleryFile);
     await uploadTask.onComplete;
     print('File Uploaded');
@@ -117,37 +194,58 @@ class UserOptionsState extends State<UserOptions> {
     });
   }
 
-  sendtoapi() async{
-    Response response;
-    Dio dio = new Dio();
-    dio.options.baseUrl = "http://34.93.55.26/jsonapp";
-    dio.options.connectTimeout = 100000;
-    print(_uploadedfileurl);
-    try{
-      response = await dio.post("http://34.93.55.26/jsonapp", data: {"img":_uploadedfileurl});
-      print("response");
-      setState(() {
-        galleryFile = null;
-        prog = false;
-        msg = "Done.!";
-      });
 
-      print(response.data);
-      galleryFile = null;
-    }
-    catch(HttpExecption) {
-      galleryFile = null;
+  sendtoapi() async {
+    print(_uploadedfileurl);
+    try {
+      Response response = await Dio().post(
+        "http://34.93.55.26/jsonapp",
+        options: Options(
+          connectTimeout: 100000,
+        ),
+        data: {
+          "img": _uploadedfileurl,
+        },
+      );
+
+      print(json.decode(response.data));
+      sendresult(json.decode(response.data));
       setState(() {
-        prog =false;
-        msg = "error";
+        prog = false;
+        msg = response.data;
       });
-      print(HttpExecption.toString());
+    } on HttpException catch (error) {
+      galleryFile = null;
+      setState(
+        () {
+          prog = false;
+          msg = "error";
+        },
+      );
+      print(error);
     }
+  }
+
+  void sendresult(data) async {
+    FirebaseDatabase database = new FirebaseDatabase();
+
+    var data1= {"uid": widget.id,"var0":data['var0'].toString(),
+    "var1":data['var1'].toString(),
+    "var2":data['var2'].toString(),
+    "var3":data['var3'].toString(),
+    "var4":data['var4'].toString(),
+    "var5":data['var5'].toString(),
+    "var6":data['var6'].toString(),
+    "var7":data['var7'].toString()};
+
+
+
+    await FirebaseDatabase.instance.reference().child('medicalhistory').push().set(data1);
 
   }
 
-  Widget progressof(){
-    if(prog){
+  Widget progressof() {
+    if (prog) {
       return new Container(
         height: 50.0,
         child: new Column(
@@ -157,9 +255,8 @@ class UserOptionsState extends State<UserOptions> {
           ],
         ),
       );
-    }
-    else{
-     return Container(
+    } else {
+      return Container(
         child: Text(msg),
       );
     }
