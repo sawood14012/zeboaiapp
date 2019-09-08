@@ -1,49 +1,86 @@
 import 'package:flutter/material.dart';
-class MyButton extends StatefulWidget {
+import 'package:zebo/pages/chatmsg.dart';
+
+class ChatScreen extends StatefulWidget {
+  ChatScreen({this.name});
   @override
-  MyButtonState createState() {
-    return MyButtonState();
-  }
+  State createState() => new ChatScreenState();
+
+  final String name;
 }
 
-class MyButtonState extends State<MyButton> {
-  int counter = 0;
-  List<String> strings = ['Flutter', 'is', 'cool', "and","awesome!"];
-  String displayedString = "Hello World!";
+class ChatScreenState extends State<ChatScreen> {
+  final TextEditingController textEditingController = new TextEditingController();
+  final List<ChatMessage> _messages= <ChatMessage>[];
 
-  void onPressOfButton() {
+
+  void _handleSubmit(String text) {
+    textEditingController.clear();
+    ChatMessage chatMessage = new ChatMessage(text: text,name: widget.name,);
     setState(() {
-      displayedString = strings[counter];
-      counter = counter < 4 ? counter + 1 : 0;
+      //used to rebuild our widget
+      _messages.insert(0, chatMessage);
     });
+  }
+
+  Widget _textComposerWidget() {
+    return new IconTheme(
+      data: new IconThemeData(color: Colors.blue),
+      child: new Container(
+        margin: const EdgeInsets.symmetric(horizontal: 8.0),
+        child: new Row(
+          children: <Widget>[
+            new Flexible(
+              child: new TextField(
+                decoration: new InputDecoration.collapsed(
+                    hintText: "Enter your message"),
+                controller: textEditingController,
+                onSubmitted: _handleSubmit,
+              ),
+            ),
+            new Container(
+              margin: const EdgeInsets.symmetric(horizontal: 8.0),
+              child: new IconButton(
+                icon: new Icon(Icons.send),
+                onPressed: () => _handleSubmit(textEditingController.text),
+              ),
+            )
+          ],
+        ),
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+
+    return new Scaffold(
       appBar: AppBar(
-        title: Text("Stateful Widget"),
-        backgroundColor: Colors.green,
+        title: Text("Chat Bot"),
+
+
+
       ),
-      body: Container(
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Text(displayedString, style: TextStyle(fontSize: 40.0)),
-              Padding(padding: EdgeInsets.all(10.0)),
-              RaisedButton(
-                child: Text(
-                  "Press me",
-                  style: TextStyle(color: Colors.white),
-                ),
-                color: Colors.red,
-                onPressed: onPressOfButton,
-              )
-            ],
+      body: Column(
+        children: <Widget>[
+          new Flexible(
+            child: new ListView.builder(
+              padding: new EdgeInsets.all(8.0),
+              reverse: true,
+              itemBuilder:(_,int index)=>_messages[index],
+              itemCount: _messages.length,
+            ),
           ),
-        ),
+          new Divider(height: 1.0,),
+          new Container(
+            decoration: new BoxDecoration(
+              color: Theme.of(context).cardColor,
+            ),
+            child: _textComposerWidget(),
+          )
+        ],
       ),
     );
+
   }
 }

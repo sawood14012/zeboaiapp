@@ -163,7 +163,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                 Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => MyButton()));
+                        builder: (context) => ChatScreen(name: name,)));
               },
             ),
             ListTile(
