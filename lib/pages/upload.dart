@@ -120,11 +120,11 @@ class UserOptionsState extends State<UserOptions> {
   sendtoapi() async{
     Response response;
     Dio dio = new Dio();
-    dio.options.baseUrl = "http://34.83.55.26/jsonapp";
+    dio.options.baseUrl = "http://34.93.55.26/jsonapp";
     dio.options.connectTimeout = 100000;
     print(_uploadedfileurl);
     try{
-      response = await dio.post("http://34.83.55.26/jsonapp", data: {"img":_uploadedfileurl});
+      response = await dio.post("http://34.93.55.26/jsonapp", data: {"img":_uploadedfileurl});
       print("response");
       setState(() {
         galleryFile = null;
